@@ -404,21 +404,21 @@
 </nav>
 
 <header class="hero" id="top" data-screen-label="Hero">
-  <dc-import name="FluXart Flux BG" core-x="{{ fluxCoreX }}" core-y="{{ fluxCoreY }}" accent="{{ fluxAccent }}" density="{{ fluxDensity }}" spacing="{{ fluxSpacing }}" turns="{{ fluxTurns }}" animate="{{ fluxAnimate }}" flip-h="{{ fluxFlipH }}" flip-v="{{ fluxFlipV }}" opacity="{{ fluxOpacity }}" opacity-start="{{ fluxOpacityStart }}" opacity-end="{{ fluxOpacityEnd }}" hint-size="100%,100%" style="position:absolute; inset:0; z-index:0;"></dc-import>
+  <div aria-hidden="true" style="position:absolute; inset:0; z-index:0; pointer-events:none;"></div>
   <div class="wrap hero-grid" style="position: relative; z-index: 1; width: 100%; max-width: 1141px; display: grid">
     <div class="rv in">
-      <h1 class="display" style="margin-top:22px; transform-origin: left top; transition: transform .2s var(--ease); transform: {{ titleTransform }}">
-        <span class="ph" style="display:block; transition: transform .2s var(--ease); transform: {{ ph1Transform }}">Focalisons-nous sur <em class="hot">l'essentiel</em>.</span>
-        <span class="ph" style="display:block; transition: transform .2s var(--ease); transform: {{ ph2Transform }}">
+      <h1 class="display" style="margin-top:22px; transform-origin: left top; transition: transform .2s var(--ease); transform: none">
+        <span class="ph" style="display:block; transition: transform .2s var(--ease); transform: none">Focalisons-nous sur <em class="hot">l'essentiel</em>.</span>
+        <span class="ph" style="display:block; transition: transform .2s var(--ease); transform: none">
           <span class="l2">Ce qui compte</span>
           <span class="l2">pour <em class="hot">vous</em>.</span>
         </span>
       </h1>
     </div>
-    <span style="white-space: nowrap; font-size: 12px; font-family: &quot;JetBrains Mono&quot;, ui-monospace, Menlo, monospace"><br></span><p class="lead rv in" style="max-width: {{ textMaxW }}; font-weight: 700; transition: transform .2s var(--ease); transform: {{ textTransform }}; font-size: clamp(15px, 2vw, 21px); line-height: 1.5">
+    <span style="white-space: nowrap; font-size: 12px; font-family: &quot;JetBrains Mono&quot;, ui-monospace, Menlo, monospace"><br></span><p class="lead rv in" style="max-width: 560px; font-weight: 700; transition: transform .2s var(--ease); transform: none; font-size: clamp(15px, 2vw, 21px); line-height: 1.5">
       FluXart Studio conçoit et réalise des applications grand public et sur-mesure.<br>Notre éthique de travail : Une prise en main simplifiée sur un pool de fonctionnalités essentielles.<br>Et une livraison-express du produit fini.
     </p>
-    <div class="rv in" style="color: {{ iconColor }}; transform-origin: left center; transition: transform .2s var(--ease); transform: {{ iconTransform }}; display:flex; align-items:center; gap: clamp(14px, 2.4vw, 30px); flex-wrap:wrap;">
+    <div class="rv in" style="color: #D4A537; transform-origin: left center; transition: transform .2s var(--ease); transform: none; display:flex; align-items:center; gap: clamp(14px, 2.4vw, 30px); flex-wrap:wrap;">
       <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
         <defs>
           <linearGradient id="lt-or" x1="0" y1="0" x2="0" y2="1">
@@ -436,10 +436,10 @@
           </g>
         </defs>
       </svg>
-      <svg viewBox="0 0 24 24" width="76" height="76" aria-label="Objectif — diaphragme" style="opacity: {{ icon1Opacity }}; transform: {{ icon1Transform }}; transform-origin: center; transition: opacity .2s var(--ease), transform .2s var(--ease);"><use href="#lt-icon"></use></svg>
+      <svg viewBox="0 0 24 24" width="76" height="76" aria-label="Objectif — diaphragme" style="opacity: 1; transform: none; transform-origin: center; transition: opacity .2s var(--ease), transform .2s var(--ease);"><use href="#lt-icon"></use></svg>
       
-      <svg viewBox="0 0 24 24" width="76" height="76" aria-hidden="true" style="opacity: {{ icon3Opacity }}; transform: {{ icon3Transform }}; transform-origin: center; transition: opacity .2s var(--ease), transform .2s var(--ease);"><use href="#lt-icon"></use></svg>
-      <svg viewBox="0 0 24 24" width="76" height="76" aria-hidden="true" style="opacity: {{ icon4Opacity }}; transform: {{ icon4Transform }}; transform-origin: center; transition: opacity .2s var(--ease), transform .2s var(--ease);"><use href="#lt-icon"></use></svg><svg viewBox="0 0 24 24" width="76" height="76" aria-hidden="true" style="opacity: {{ icon2Opacity }}; transform: {{ icon2Transform }}; transform-origin: center; transition: opacity .2s var(--ease), transform .2s var(--ease);"><use href="#lt-icon"></use></svg>
+      <svg viewBox="0 0 24 24" width="76" height="76" aria-hidden="true" style="opacity: 1; transform: none; transform-origin: center; transition: opacity .2s var(--ease), transform .2s var(--ease);"><use href="#lt-icon"></use></svg>
+      <svg viewBox="0 0 24 24" width="76" height="76" aria-hidden="true" style="opacity: 1; transform: none; transform-origin: center; transition: opacity .2s var(--ease), transform .2s var(--ease);"><use href="#lt-icon"></use></svg><svg viewBox="0 0 24 24" width="76" height="76" aria-hidden="true" style="opacity: 1; transform: none; transform-origin: center; transition: opacity .2s var(--ease), transform .2s var(--ease);"><use href="#lt-icon"></use></svg>
     </div>
   </div>
 </header>
