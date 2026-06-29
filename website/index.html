@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;0,6..72,800;1,6..72,400;1,6..72,600;1,6..72,700&amp;family=Alan+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;family=Caveat:wght@600;700&amp;family=Roboto+Slab:wght@800&amp;display=swap" rel="stylesheet">
+  <style style="position: relative">
+    /* ════════════════════════════════════════════════════════════
+       FluXart — Éditorial encre & vermillon
+       ════════════════════════════════════════════════════════════ */
+    :root {
+      --paper:    #F3EDE2;
+      --paper-2:  #ECE4D6;
+      --paper-3:  #E4DAC8;
+      --ink:      #19150F;
+      --ink-soft: #2A241B;
+      --fg:       #221D15;
+      --fg-2:     #50473A;
+      --muted:    #7A6F5E;
+      --line:     rgba(25,21,15,0.13);
+      --line-2:   rgba(25,21,15,0.08);
+
+      --accent:        #C41E1A;
+      --accent-ink:    #9E120F;
+      --accent-on:     #FBF7EF;
+
+      --cat-prod: #B2421F;
+      --cat-gest: #8A6D2E;
+      --cat-edit: #5B4B86;
+      --cat-util: #3E6B47;
+      --cat-ext:  #2E6E7E;
+
+      --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+      --font-body:    "Alan Sans", system-ui, -apple-system, sans-serif;
+      --font-mono:    "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --font-sign:    "Caveat", cursive;
+
+      --maxw: 1140px;
+      --gut: clamp(20px, 5vw, 56px);
+      --sect: clamp(64px, 9vw, 124px);
+      --ease: cubic-bezier(.22,1,.36,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+    body {
+      margin: 0; background: #000; color: var(--fg);
+      font-family: var(--font-body); font-size: 17px; line-height: 1.55;
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; color: inherit; }
+    p { margin: 0; text-wrap: pretty; }
+    h1,h2,h3,h4 { margin: 0; text-wrap: balance; }
+    ::selection { background: var(--accent); color: var(--accent-on); }
+
+    /* Cadre : limite la largeur visible à 1280px et masque tout débordement (lignes du flux comprises) */
+    .site-frame { max-width: 1280px; margin-inline: auto; position: relative; overflow-x: clip; background: var(--paper); }
+    .wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gut); }
+    .display { font-family: var(--font-display); font-weight: 800; line-height: 1.0; letter-spacing: -0.018em; }
+    em.hot { font-style: italic; color: var(--accent); font-weight: 700; }
+    .eyebrow {
+      font-family: var(--font-mono); font-size: 12px; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--accent-ink); font-weight: 500;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .eyebrow::before { content:""; width: 26px; height: 1.5px; background: var(--accent); display:inline-block; }
+    .lead { font-size: clamp(18px, 2vw, 21px); color: var(--fg-2); line-height: 1.5; max-width: 56ch; }
+    .sign { font-family: var(--font-sign); color: var(--accent-ink); font-size: 30px; line-height: 1; }
+
+    .rv { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+    .rv.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce){ .rv{opacity:1;transform:none;transition:none;} html{scroll-behavior:auto;} }
+
+    .nav { position: static; z-index: 60; background: color-mix(in oklab, var(--paper) 86%, transparent);
+           backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-2); }
+    .nav-in { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 66px; }
+    .nav .wrap { max-width: none; }
+    .brand { display: flex; align-items: center; gap: 11px; font-family: var(--font-display); font-weight: 800; font-size: 21px; letter-spacing: -.02em; }
+    .brand .mk { width: 30px; height: 30px; flex: none; position: relative; }
+    .brand .mk svg { width: 100%; height: 100%; }
+    .nav-links { display: flex; align-items: center; gap: 30px; }
+    .nav-links a { font-size: 14.5px; color: var(--fg-2); font-weight: 500; position: relative; transition: color .18s var(--ease); }
+    .nav-links a::after { content:""; position:absolute; left:0; right:100%; bottom:-5px; height:2px; background:var(--accent); transition: right .25s var(--ease); }
+    .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+    .nav-links a:hover::after, .nav-links a.active::after { right: 0; }
+    .nav-cta { display:inline-flex; }
+    @media (max-width: 820px){ .nav-links{ display:none; } }
+    /* Header tablette : le logo est en position:absolute (édité) → il sort du flux et la baseline
+       passe dessous. On le remet dans le flux sous 820px pour qu'ils s'alignent côte à côte. */
+    @media (max-width: 820px){ .nav .brand{ position: static !important; } }
+    /* Header mobile : sous 600px plus de place pour la baseline → on la masque, logo seul. */
+    @media (max-width: 600px){ .nav-tag{ display:none; } }
+
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:13px 22px;
+           border-radius: 2px; font-weight:600; font-size:15px; letter-spacing:-.01em; border:1.5px solid transparent;
+           transition: transform .16s var(--ease), background .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease); }
+    .btn:active { transform: translateY(1px); }
+    .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    .btn-arr svg { width: 15px; height: 15px; transition: transform .2s var(--ease); }
+    .btn-arr:hover svg { transform: translateX(4px); }
+    .btn-primary { background: var(--accent); color: var(--accent-on); }
+    .btn-primary:hover { background: var(--accent-ink); }
+    .btn-ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
+    .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+    .proj-btns .btn-ghost:hover { background: #1B2A4A; color: var(--paper); border-color: #1B2A4A; }
+    .btn-on-ink { background: var(--paper); color: var(--ink); }
+    .btn-on-ink:hover { background: var(--accent); color: var(--accent-on); }
+    .btn-ghost-ink { background: transparent; color: var(--paper); border-color: rgba(243,237,226,.4); }
+    .btn-ghost-ink:hover { border-color: var(--paper); }
+    .btn-sm { padding: 9px 15px; font-size: 13.5px; }
+
+    .hero { padding-top: clamp(48px, 8vw, 96px); padding-bottom: 0; position: relative; overflow: clip; }
+    .hero-grid { display: grid; grid-template-columns: 1fr; gap: clamp(28px, 4vw, 48px); }
+    .hero h1 { font-size: clamp(41px, 7.4vw, 91px); }
+    .hero h1 .l2 { display:block; }
+    .hero-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 8px; }
+    .hero-aside { display: flex; flex-wrap: wrap; gap: 22px; border-top: 1px solid var(--line); padding-top: 22px; }
+    .hero-aside .col { flex: 1 1 200px; }
+    .hero-aside .k { font-family: var(--font-mono); font-size: 12px; letter-spacing:.1em; text-transform:uppercase; color: var(--muted); margin-bottom: 6px; }
+    .hero-aside .v { font-family: var(--font-display); font-weight: 700; font-size: 19px; }
+
+    /* ── Hero responsive : sous 1280px on retire le groupe d'icônes ET on neutralise les
+       décalages px du titre/texte (réglés pour le desktop) → pile verticale propre.
+       Les transforms viennent de tweaks inline → !important. ── */
+    @media (max-width: 1279.98px){
+      .hero-grid > .rv:last-child { display: none !important; }
+      .hero-grid { gap: clamp(20px, 3vw, 30px); }
+      .hero h1,
+      .hero h1 .ph,
+      .hero .lead { transform: none !important; }
+      .hero .lead { max-width: 60ch !important; }
+    }
+    /* ── Sous 860px on réduit la taille du titre ── */
+    @media (max-width: 860px){
+      .hero { padding-top: clamp(36px, 8vw, 64px); }
+      .hero h1 { font-size: clamp(34px, 9vw, 60px); }
+    }
+    @media (max-width: 480px){
+      .hero h1 { font-size: clamp(30px, 10vw, 42px); }
+    }
+
+    .sect { padding-block: var(--sect); }
+    .sect-head { max-width: 760px; margin-bottom: clamp(32px, 5vw, 56px); }
+    .sect-head h2 { font-size: clamp(34px, 5.2vw, 60px); margin-top: 18px; }
+    .sect-head .lead { margin-top: 18px; }
+
+    .objet { background: var(--paper); border-top: 1px solid var(--line); }
+    .manifesto { display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(28px, 5vw, 64px); align-items: center; }
+    @media (max-width: 880px){ .manifesto { grid-template-columns: 1fr; } }
+    .thesis h2 { font-size: clamp(36px, 6vw, 68px); line-height: .98; }
+    .thesis .lead { margin-top: 22px; }
+    .filter-card { background: var(--paper-2); border: 1px solid var(--line); border-radius: 4px; padding: clamp(22px, 3vw, 34px); box-shadow: 0 24px 60px -36px rgba(25,21,15,.5); }
+    .filter-card .fc-h { font-family: var(--font-mono); font-size: 12px; letter-spacing:.16em; text-transform:uppercase; color: var(--muted); margin-bottom: 18px; }
+    .cut { display:flex; align-items:center; gap: 12px; padding: 12px 2px; border-bottom: 1px dashed var(--line); color: var(--muted); }
+    .cut:last-of-type { border-bottom: 0; }
+    .cut .x { width: 20px; height: 20px; flex:none; color: var(--muted); }
+    .cut .lbl { position: relative; font-weight: 500; }
+    .cut .lbl::after { content:""; position:absolute; left:-2px; right:-2px; top: 52%; height: 1.5px; background: var(--muted); transform: scaleX(0); transform-origin: left; transition: transform .5s var(--ease); }
+    .filter-card.in .cut .lbl::after { transform: scaleX(1); }
+    .cut:nth-child(2) .lbl::after { transition-delay:.05s; } .cut:nth-child(3) .lbl::after{transition-delay:.13s;}
+    .cut:nth-child(4) .lbl::after{transition-delay:.21s;} .cut:nth-child(5) .lbl::after{transition-delay:.29s;}
+    .keep { margin-top: 18px; padding: 18px 18px; background: var(--ink); color: var(--paper); border-radius: 3px; display:flex; align-items:center; gap: 14px; }
+    .keep .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex:none; box-shadow: 0 0 0 4px rgba(210,59,34,.25); }
+    .keep .kt { font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+    .keep .ks { color: rgba(243,237,226,.6); font-size: 13px; }
+
+    .values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; margin-top: clamp(40px, 6vw, 72px); }
+    @media (max-width: 760px){ .values { grid-template-columns: 1fr; } }
+    .val { background: var(--paper); padding: clamp(24px, 3vw, 38px); }
+    .val .vn { font-family: var(--font-mono); font-size: 12px; color: var(--accent-ink); letter-spacing: .12em; }
+    .val h3 { font-family: var(--font-display); font-size: 28px; font-weight: 700; margin: 14px 0 10px; }
+    .val p { color: var(--fg-2); font-size: 15.5px; }
+
+    .real { background: var(--paper-2); border-block: 1px solid var(--line); }
+
+    .catalog-bar { display:flex; flex-wrap:wrap; align-items:center; gap: 10px 8px;
+      margin-bottom: clamp(28px,4vw,44px); padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+    .catalog-lbl { font-family: var(--font-mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--ink); font-weight: 500; margin-right: 8px; display:inline-flex; align-items:center; gap:9px; }
+    .catalog-lbl::before { content:""; width: 7px; height:7px; border-radius:50%; background: var(--accent); flex:none; }
+    .filt { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: .03em; font-weight: 500; color: var(--fg-2);
+      background: transparent; border: 1.5px solid var(--line); border-radius: 3px; padding: 8px 13px; line-height:1;
+      transition: color .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease); }
+    .filt:hover { border-color: var(--cat, var(--ink)); color: var(--cat, var(--ink)); }
+    .filt[aria-pressed="true"] { background: var(--cat, var(--ink)); color: var(--accent-on); border-color: var(--cat, var(--ink)); }
+    .filt .n { font-size: 10px; opacity: .55; margin-left: 6px; font-variant-numeric: tabular-nums; }
+
+    .showcase { position: relative; }
+    .show-viewport { overflow: hidden; border-radius: 12px; touch-action: pan-y; }
+    .show-track { display: flex; transition: transform .55s var(--ease); }
+    .show-track.drag { transition: none; }
+
+    .proj { flex: 0 0 100%; display: grid; grid-template-columns: 1.46fr 1fr; min-width: 0; }
+    @media (max-width: 880px){ .proj { grid-template-columns: 1fr; } }
+
+    .proj-visual { position: relative; aspect-ratio: 612/415; min-height: 320px;
+      background: linear-gradient(162deg, color-mix(in oklab, var(--cat) 18%, var(--paper-3)), var(--paper-3));
+      border: 1px solid var(--line); border-right: 0; border-radius: 12px 0 0 12px;
+      display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .proj-visual img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:center; }
+    @media (max-width: 880px){ .proj-visual { border-right: 1px solid var(--line); border-bottom: 0; border-radius: 12px 12px 0 0; aspect-ratio: 16/11; min-height: 230px; } }
+    .proj-visual::before { content:""; position:absolute; top:16px; left:18px; width: 46px; height: 8px; border-radius: 4px;
+      background: repeating-linear-gradient(90deg, color-mix(in oklab, var(--cat) 50%, transparent) 0 8px, transparent 8px 16px); opacity:.55; }
+    .proj-visual .phl { font-family: var(--font-mono); font-size: 11.5px; color: var(--fg-2); letter-spacing: .08em; text-transform: uppercase;
+      border: 1px dashed color-mix(in oklab, var(--cat) 45%, var(--line)); padding: 8px 13px; border-radius: 3px;
+      background: color-mix(in oklab, var(--paper) 72%, transparent); }
+    .proj-flag { position:absolute; top:15px; right:16px; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500;
+      letter-spacing: .1em; text-transform: uppercase; color: var(--cat);
+      background: color-mix(in oklab, var(--paper) 80%, transparent); border: 1px solid color-mix(in oklab, var(--cat) 32%, var(--line));
+      padding: 5px 10px; border-radius: 2px; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+
+    .proj-info { background: var(--paper); border: 1px solid var(--line); border-left: 0; border-radius: 0 12px 12px 0;
+      border-top: 4px solid var(--cat, var(--accent)); padding: clamp(28px, 3.2vw, 48px);
+      display:flex; flex-direction: column; justify-content: center; gap: 16px; }
+    @media (max-width: 880px){ .proj-info { border-left: 1px solid var(--line); border-top: 4px solid var(--cat, var(--accent)); border-radius: 0 0 12px 12px; } }
+    .proj-name { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 3.4vw, 46px); line-height: 1.02; letter-spacing: -.02em; }
+    .proj-name .stub { color: var(--cat, var(--accent)); font-weight: 600; font-style: italic; }
+    .proj-desc { color: var(--fg-2); font-size: clamp(15px, 1.5vw, 17px); line-height: 1.5; max-width: 40ch; }
+    .proj-act { display:flex; flex-wrap: wrap; gap: 14px; margin-top: auto; align-items: flex-end; justify-content: space-between; }
+    .proj-btns { display:flex; flex-wrap: wrap; gap: 10px; }
+    .proj-plat { display:inline-flex; flex-direction: column; gap: 3px; font-family: var(--font-mono); padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: color-mix(in oklab, var(--cat) 7%, var(--paper)); }
+    .proj-plat .lbl { font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .proj-plat b { font-size: 14px; font-weight: 600; letter-spacing: .01em; color: var(--cat, var(--accent)); }
+
+    .show-nav { display:flex; align-items:center; justify-content: space-between; gap: 18px; margin-top: 26px; }
+    .show-arrows { display:flex; gap: 10px; }
+    .cbtn2 { width: 50px; height: 50px; border-radius: 50%; background: transparent; color: var(--ink);
+      border: 1.5px solid var(--ink); display:flex; align-items:center; justify-content:center; font-size: 21px; line-height: 1;
+      transition: background .18s var(--ease), color .18s var(--ease), transform .16s var(--ease), opacity .18s var(--ease); }
+    .cbtn2:hover { background: var(--ink); color: var(--paper); }
+    .cbtn2:active { transform: translateY(1px); }
+    .cbtn2:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .cbtn2:disabled { opacity: .28; pointer-events: none; }
+    .show-dots { display:flex; align-items:center; gap: 8px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+      background: color-mix(in oklab, var(--ink) 22%, transparent); transition: width .25s var(--ease), background .2s var(--ease); }
+    .dot.on { background: var(--cat, var(--accent)); width: 24px; border-radius: 4px; }
+    .show-count { font-family: var(--font-mono); font-size: 13px; letter-spacing: .12em; color: var(--muted);
+      font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .show-count b { color: var(--ink); font-weight: 500; }
+    .real-note { margin-top: 22px; font-size: 13.5px; color: var(--muted); font-family: var(--font-mono); letter-spacing: .02em; }
+
+    .human { background: var(--ink); color: var(--paper); }
+    .human .eyebrow { color: #E8956F; }
+    .human .eyebrow::before { background: var(--accent); }
+    .human-grid { display: grid; grid-template-columns: 280px 1fr; gap: clamp(28px, 5vw, 64px); align-items: center; }
+    @media (max-width: 820px){ .human-grid { grid-template-columns: 1fr; } }
+    .portrait { aspect-ratio: 4/5; border-radius: 6px; border: 1px solid rgba(243,237,226,.18);
+                background: linear-gradient(160deg, #2A241B, #15110C); position: relative; display:flex; align-items:flex-end; padding: 18px; overflow: hidden; }
+    .portrait::after { content:"Portrait à venir"; position:absolute; top:16px; left:16px; font-family: var(--font-mono); font-size: 11px; letter-spacing:.1em; text-transform:uppercase; color: rgba(243,237,226,.35); border:1px dashed rgba(243,237,226,.2); padding:5px 9px; border-radius:3px; }
+    .portrait .pname { font-family: var(--font-display); font-weight: 700; font-size: 18px; color: rgba(243,237,226,.85); }
+    .portrait.filled::after { display: none; }
+    .portrait.filled { padding: 0; align-items: stretch; border-radius: 20px; }
+    .portrait.filled img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 20px; }
+    .human blockquote { margin: 0; }
+    .human .quote { font-family: var(--font-display); font-weight: 600; font-size: clamp(24px, 3.4vw, 38px); line-height: 1.22; letter-spacing: -.01em; }
+    .human .quote .hot { color: #F0A07D; font-style: italic; }
+    .human .qfoot { margin-top: 26px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+    .human .sign { color: #F0A07D; font-size: 34px; }
+    .human .who { font-size: 14px; color: rgba(243,237,226,.6); font-family: var(--font-mono); letter-spacing: .04em; }
+
+    .serv { background: var(--paper); border-bottom: 1px solid var(--line); }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2vw, 22px); margin-bottom: clamp(36px, 5vw, 56px); }
+    @media (max-width: 760px){ .steps { grid-template-columns: 1fr; } }
+    .step { padding-top: 22px; border-top: 2px solid var(--ink); }
+    .step .sn { font-family: var(--font-mono); font-size: 13px; color: var(--accent-ink); letter-spacing: .1em; }
+    .step h3 { font-family: var(--font-display); font-size: 23px; font-weight: 700; margin: 12px 0 8px; }
+    .step p { color: var(--fg-2); font-size: 15px; }
+
+    .price { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(24px, 4vw, 52px); align-items: center;
+             background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: clamp(26px, 4vw, 44px); }
+    @media (max-width: 820px){ .price { grid-template-columns: 1fr; } }
+    .price .seg { display: inline-flex; background: var(--paper-3); border: 1px solid var(--line); border-radius: 3px; padding: 4px; gap: 4px; flex-wrap: wrap; }
+    .seg button { padding: 9px 14px; border-radius: 2px; font-size: 13.5px; font-weight: 600; color: var(--fg-2); background: transparent; border: 0; transition: background .18s var(--ease), color .18s var(--ease); }
+    .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+    .price-read { margin-top: 24px; }
+    .price-read .from { font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+    .price-read .amt { font-family: var(--font-display); font-weight: 800; font-size: clamp(40px, 6vw, 62px); line-height: 1; margin: 8px 0; letter-spacing: -.02em; }
+    .price-read .amt .cur { color: var(--accent); }
+    .price-read .amt .stub { color: var(--muted); font-style: italic; font-weight: 700; }
+    .price-read .delay { font-size: 15px; color: var(--fg-2); }
+    .price-read .delay b { color: var(--ink); }
+    .gauge .gl { font-family: var(--font-mono); font-size: 12px; letter-spacing:.12em; text-transform:uppercase; color: var(--muted); margin-bottom: 12px; }
+    .bars { display:flex; gap: 8px; align-items: flex-end; height: 88px; }
+    .bar { flex: 1; background: var(--paper-3); border: 1px solid var(--line); border-radius: 3px 3px 0 0; transition: background .25s var(--ease), height .35s var(--ease); }
+    .bar.on { background: var(--accent); border-color: var(--accent-ink); }
+    .euros { display:flex; justify-content: space-between; margin-top: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+    .gnote { margin-top: 16px; font-size: 12.5px; color: var(--muted); }
+
+    /* ── 03 Les 4 piliers — accordéon déroulant ── */
+    .pillars { margin-top: 0; }
+    .pillars-head { max-width: 760px; margin-bottom: clamp(20px, 3vw, 30px); padding-top: 22px; border-top: 1px solid var(--line); }
+    .pillars-head h3 { font-family: var(--font-display); font-weight: 600; font-size: clamp(20px, 2.4vw, 27px); line-height: 1.18; letter-spacing: -.01em; color: var(--ink); }
+    .pillars-head h3 span { color: var(--muted); font-weight: 500; font-style: italic; }
+    .acc { display: flex; flex-direction: column; gap: 12px; }
+    .acc-item { border: 1px solid var(--line); border-radius: 5px; overflow: hidden; background: var(--paper-2); }
+    .acc-head { width: 100%; display: flex; align-items: center; gap: 18px; padding: 20px clamp(18px, 2.4vw, 26px); background: var(--ink); color: var(--paper); border: 0; text-align: left; transition: background .2s var(--ease); }
+    .acc-head:hover { background: var(--ink-soft); }
+    .acc-head:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+    .acc-ic { width: 28px; height: 28px; flex: none; color: #F0A07D; }
+    .acc-ic svg { width: 100%; height: 100%; display: block; }
+    .acc-num { font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; color: rgba(243,237,226,.5); flex: none; }
+    .acc-title { font-family: var(--font-display); font-weight: 700; font-size: clamp(19px, 2.2vw, 25px); line-height: 1.1; flex: 1; color: var(--paper); }
+    .acc-chev { width: 22px; height: 22px; flex: none; color: rgba(243,237,226,.55); transition: transform .3s var(--ease), color .2s var(--ease); }
+    .acc-item.open .acc-head { background: var(--ink-soft); }
+    .acc-chev.open { transform: rotate(180deg); color: #F0A07D; }
+    .acc-body { overflow: hidden; max-height: 0; }
+    .acc-body.open { max-height: 1000px; }
+    .acc-body-in { min-height: 0; opacity: 0; transform: translateY(-8px); transition: opacity .4s var(--ease), transform .4s var(--ease); }
+    .acc-body.open .acc-body-in { opacity: 1; transform: none; }
+    .acc-body p { padding: 20px clamp(18px, 2.4vw, 26px) 24px calc(28px + 18px + clamp(18px, 2.4vw, 26px)); color: var(--fg-2); font-size: 16px; line-height: 1.58; max-width: 80ch; }
+    .acc-body p b { color: var(--ink); font-weight: 600; }
+    @media (max-width: 560px){ .acc-body p { padding-left: clamp(18px, 2.4vw, 26px); } }
+
+    /* ── 01 Le constat — organigramme interactif ── */
+    .constat { background: var(--paper); border-top: 1px solid var(--line); }
+    .chain { display:flex; align-items:stretch; gap:12px; flex-wrap:wrap; }
+    .chain .node { flex:1 1 200px; background:var(--paper-2); border:1px solid var(--line); border-radius:4px; padding:18px 22px; display:flex; flex-direction:column; gap:6px; }
+    .chain .node .nk { font-family:var(--font-mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+    .chain .node .nv { font-family:var(--font-display); font-weight:700; font-size:clamp(19px,2vw,24px); line-height:1.05; }
+    .chain .node.pivot { background:var(--ink); border-color:var(--ink); }
+    .chain .node.pivot .nk { color:#E8956F; }
+    .chain .node.pivot .nv { color:var(--paper); }
+    .chain .arrow { align-self:center; color:var(--accent); font-size:26px; line-height:1; flex:none; }
+    @media (max-width:640px){ .chain{flex-direction:column;} .chain .arrow{transform:rotate(90deg);} }
+
+    .branch { text-align:center; padding:clamp(18px,3vw,26px) 0 clamp(16px,2.5vw,22px); }
+    .branch-lbl { font-family:var(--font-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); display:inline-flex; align-items:center; gap:10px; }
+    .branch-lbl::before { content:"\2193"; font-size:16px; }
+
+    .defauts { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:4px; overflow:hidden; }
+    @media (max-width:860px){ .defauts{grid-template-columns:repeat(2,1fr);} }
+    @media (max-width:460px){ .defauts{grid-template-columns:1fr;} }
+    .defaut { background:var(--paper); padding:22px 20px; text-align:left; border:0; border-top:3px solid transparent; display:flex; flex-direction:column; gap:8px; transition:background .2s var(--ease), border-color .2s var(--ease); }
+    .defaut .di { font-family:var(--font-mono); font-size:12px; color:var(--muted); letter-spacing:.1em; }
+    .defaut h4 { font-family:var(--font-display); font-weight:700; font-size:19px; line-height:1.12; }
+    .defaut .dsub { color:var(--fg-2); font-size:14px; line-height:1.4; }
+    .defaut:hover { background:var(--paper-2); }
+    .defaut[aria-pressed="true"] { background:var(--paper-2); border-top-color:var(--accent); }
+    .defaut[aria-pressed="true"] .di { color:var(--accent-ink); }
+
+    .defaut-detail { margin-top:18px; background:var(--paper-2); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:3px; padding:18px 22px; display:flex; gap:16px; align-items:flex-start; }
+    .defaut-detail .dd-k { font-family:var(--font-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-ink); flex:none; padding-top:4px; }
+    .defaut-detail .dd-text { color:var(--fg); font-size:15.5px; line-height:1.5; margin:0; }
+
+    .resultat { margin-top:clamp(26px,4vw,40px); background:var(--ink); color:var(--paper); border-radius:6px; padding:clamp(24px,3.5vw,40px); }
+    .resultat .res-h { font-family:var(--font-mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:rgba(243,237,226,.55); display:flex; align-items:center; gap:11px; margin-bottom:8px; }
+    .resultat .res-h .res-eq { color:var(--accent); font-family:var(--font-display); font-size:22px; font-weight:800; }
+    .resultat .res-hint { font-size:13px; color:rgba(243,237,226,.42); font-family:var(--font-mono); letter-spacing:.02em; margin:0 0 22px; }
+    .res-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    @media (max-width:760px){ .res-grid{grid-template-columns:1fr;} }
+    .ritem { background:rgba(243,237,226,.04); border:1px solid rgba(243,237,226,.12); border-left:3px solid rgba(243,237,226,.18); border-radius:3px; padding:18px 20px; transition:opacity .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease); opacity:.5; }
+    .ritem .rn { font-family:var(--font-mono); font-size:11px; letter-spacing:.12em; color:rgba(243,237,226,.45); display:block; margin-bottom:8px; }
+    .ritem h4 { font-family:var(--font-display); font-weight:700; font-size:19px; line-height:1.18; }
+    .ritem.hot { opacity:1; border-left-color:var(--accent); background:rgba(196,30,26,.13); }
+    .ritem.hot .rn { color:#F0A07D; }
+
+    .cta { background: var(--ink); color: var(--paper); }
+    .cta-in { text-align: center; padding-block: clamp(64px, 9vw, 120px); }
+    .cta h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(36px, 6vw, 72px); line-height: 1.0; letter-spacing: -.02em; }
+    .cta h2 .hot { color: #F0A07D; font-style: italic; }
+    .cta .lead { margin: 22px auto 34px; color: rgba(243,237,226,.7); }
+    .cta-btns { display:flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    footer { background: var(--ink); color: rgba(243,237,226,.6); border-top: 1px solid rgba(243,237,226,.12); }
+    .foot-in { display:flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap; padding-block: 30px; }
+    .foot-brand { font-family: var(--font-display); font-weight: 800; font-size: 18px; color: var(--paper); display:flex; align-items:center; gap:10px; }
+    .foot-in a { color: rgba(243,237,226,.7); }
+    .foot-in a:hover { color: var(--paper); }
+    .foot-links { display:flex; gap: 22px; font-size: 14px; flex-wrap: wrap; }
+  </style>
+</helmet>
+
+<div class="site-frame">
+<nav class="nav" data-screen-label="Nav">
+  <div class="wrap nav-in" style="display: flex; flex-direction: row; justify-content: space-between; gap: 0px; background: linear-gradient(-270deg, #e6dcc7, #db9a3239); border-bottom: 2px solid #19150F">
+    <a class="brand" href="#top" aria-label="FluXart Studio — accueil" style="gap: 10px; font-size: 24px; align-items: center; display: flex; letter-spacing: -0.02em; line-height: 30px; position: absolute">
+      <span class="mk" aria-hidden="true">
+        <svg viewBox="0 0 30 30" fill="none">
+          <rect x="1" y="1" width="28" height="28" rx="5" fill="#19150F"></rect>
+          <path d="M9 21V9h11" stroke="#C41E1A" stroke-width="3" stroke-linecap="square"></path>
+          <path d="M9 15h7" stroke="#F3EDE2" stroke-width="3" stroke-linecap="square"></path>
+        </svg>
+      </span>
+      FluXart Studio
+    </a>
+    <div class="nav-links">
+      
+      
+      
+      
+    </div>
+    <span class="nav-tag" style="font-family: 'Roboto Slab',serif; font-weight: 800; text-transform: uppercase; font-size: clamp(13px, 1.7vw, 16px); letter-spacing: .01em; color: #19150F; white-space: nowrap">Applications personnalisées &amp; grand public</span>
+  </div>
+</nav>
+
+<header class="hero" id="top" data-screen-label="Hero">
+  <dc-import name="FluXart Flux BG" core-x="{{ fluxCoreX }}" core-y="{{ fluxCoreY }}" accent="{{ fluxAccent }}" density="{{ fluxDensity }}" spacing="{{ fluxSpacing }}" turns="{{ fluxTurns }}" animate="{{ fluxAnimate }}" flip-h="{{ fluxFlipH }}" flip-v="{{ fluxFlipV }}" opacity="{{ fluxOpacity }}" opacity-start="{{ fluxOpacityStart }}" opacity-end="{{ fluxOpacityEnd }}" hint-size="100%,100%" style="position:absolute; inset:0; z-index:0;"></dc-import>
+  <div class="wrap hero-grid" style="position: relative; z-index: 1; width: 100%; max-width: 1141px; display: grid">
+    <div class="rv in">
+      <h1 class="display" style="margin-top:22px; transform-origin: left top; transition: transform .2s var(--ease); transform: {{ titleTransform }}">
+        <span class="ph" style="display:block; transition: transform .2s var(--ease); transform: {{ ph1Transform }}">Focalisons-nous sur <em class="hot">l'essentiel</em>.</span>
+        <span class="ph" style="display:block; transition: transform .2s var(--ease); transform: {{ ph2Transform }}">
+          <span class="l2">Ce qui compte</span>
+          <span class="l2">pour <em class="hot">vous</em>.</span>
+        </span>
+      </h1>
+    </div>
+    <span style="white-space: nowrap; font-size: 12px; font-family: &quot;JetBrains Mono&quot;, ui-monospace, Menlo, monospace"><br></span><p class="lead rv in" style="max-width: {{ textMaxW }}; font-weight: 700; transition: transform .2s var(--ease); transform: {{ textTransform }}; font-size: clamp(15px, 2vw, 21px); line-height: 1.5">
+      FluXart Studio conçoit et réalise des applications grand public et sur-mesure.<br>Notre éthique de travail : Une prise en main simplifiée sur un pool de fonctionnalités essentielles.<br>Et une livraison-express du produit fini.
+    </p>
+    <div class="rv in" style="color: {{ iconColor }}; transform-origin: left center; transition: transform .2s var(--ease); transform: {{ iconTransform }}; display:flex; align-items:center; gap: clamp(14px, 2.4vw, 30px); flex-wrap:wrap;">
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="lt-or" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#E0A93C"></stop>
+            <stop offset="0.55" stop-color="#D4A24A"></stop>
+            <stop offset="1" stop-color="#A9772E"></stop>
+          </linearGradient>
+          <linearGradient id="lt-or-soft" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#F2D689"></stop>
+            <stop offset="1" stop-color="#D9B45E"></stop>
+          </linearGradient>
+          <g id="lt-icon">
+            <path fill="url(#lt-or-soft)" opacity=".42" d="M10.9 19.91c.36.05.72.09 1.1.09a8 8 0 0 0 5.61-2.3L14.89 13zm-1.04-.21l2.71-4.7H4.59a8.03 8.03 0 0 0 5.27 4.7M8.54 12L5.7 7.09A7.96 7.96 0 0 0 4 12c0 .69.1 1.36.26 2h5.43zm9.76 4.91A7.96 7.96 0 0 0 20 12c0-.69-.1-1.36-.26-2h-5.43zM13.73 9h5.68a8.03 8.03 0 0 0-5.28-4.7L11.42 9zm-3.46 0l2.83-4.92C12.74 4.03 12.37 4 12 4c-2.18 0-4.16.88-5.6 2.3L9.12 11z"></path>
+            <path fill="url(#lt-or)" d="M12 22c5.52 0 10-4.48 10-10c0-4.75-3.31-8.72-7.75-9.74l-.08-.04l-.01.02C13.46 2.09 12.74 2 12 2C6.48 2 2 6.48 2 12s4.48 10 10 10m0-2c-.38 0-.74-.04-1.1-.09L14.89 13l2.72 4.7A8 8 0 0 1 12 20m8-8c0 1.85-.64 3.55-1.7 4.91l-4-6.91h5.43c.17.64.27 1.31.27 2m-.59-3h-7.99l2.71-4.7c2.4.66 4.35 2.42 5.28 4.7M12 4c.37 0 .74.03 1.1.08L10.27 9l-1.15 2L6.4 6.3A7.96 7.96 0 0 1 12 4m-8 8c0-1.85.64-3.55 1.7-4.91L8.54 12l1.15 2H4.26C4.1 13.36 4 12.69 4 12m6.27 3h2.3l-2.71 4.7A8.05 8.05 0 0 1 4.58 15z"></path>
+          </g>
+        </defs>
+      </svg>
+      <svg viewBox="0 0 24 24" width="76" height="76" aria-label="Objectif — diaphragme" style="opacity: {{ icon1Opacity }}; transform: {{ icon1Transform }}; transform-origin: center; transition: opacity .2s var(--ease), transform .2s var(--ease);"><use href="#lt-icon"></use></svg>
+      
+      <svg viewBox="0 0 24 24" width="76" height="76" aria-hidden="true" style="opacity: {{ icon3Opacity }}; transform: {{ icon3Transform }}; transform-origin: center; transition: opacity .2s var(--ease), transform .2s var(--ease);"><use href="#lt-icon"></use></svg>
+      <svg viewBox="0 0 24 24" width="76" height="76" aria-hidden="true" style="opacity: {{ icon4Opacity }}; transform: {{ icon4Transform }}; transform-origin: center; transition: opacity .2s var(--ease), transform .2s var(--ease);"><use href="#lt-icon"></use></svg><svg viewBox="0 0 24 24" width="76" height="76" aria-hidden="true" style="opacity: {{ icon2Opacity }}; transform: {{ icon2Transform }}; transform-origin: center; transition: opacity .2s var(--ease), transform .2s var(--ease);"><use href="#lt-icon"></use></svg>
+    </div>
+  </div>
+</header>
+
+<section class="constat sect" id="constat" data-screen-label="Le constat">
+  <div class="wrap">
+    <div class="sect-head rv">
+      <span class="eyebrow">01.LE CONSTAT</span>
+      <h2 class="display">Pourquoi l'outil générique<br>vous coûte si cher.</h2>
+      <p class="lead" style="width: 100%; max-width: 1020px">Jusqu'ici, une entreprise devait se contorsionner son flux aux contraintes logicielles d'applications polyvalentes pensées pour tout le monde, peu importe la nature spécifique de ses besoins.<br>Avec tous les désagréments que cela entraîne.</p>
+    </div>
+
+    <div class="chain rv">
+      <div class="node">
+        <div class="nk">Point de départ</div>
+        <div class="nv">Une entreprise</div>
+      </div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="node">
+        <div class="nk">Ce qu'elle a</div>
+        <div class="nv">Des besoins spécifiques</div>
+      </div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="node pivot">
+        <div class="nk">Ce qu'elle choisit</div>
+        <div class="nv">Un outil pro générique</div>
+      </div>
+    </div>
+
+    <div class="branch rv"><span class="branch-lbl">Qui traîne 4 défauts structurels</span></div>
+
+    <div class="defauts rv" id="defauts" role="group" aria-label="Les quatre défauts d'un outil générique">
+      <button class="defaut" type="button" data-i="0" data-links="prod spec" aria-pressed="true" data-detail="Des centaines d'options pour séduire le plus grand nombre. Vous n'en utiliserez qu'une fraction, mais vous payez — et vous subissez — tout le reste.">
+        <div class="di">01</div>
+        <h4>Fonctionnalités pléthoriques</h4>
+        <p class="dsub">Pensées pour toucher un maximum de clients.</p>
+      </button>
+      <button class="defaut" type="button" data-i="1" data-links="cout prod" aria-pressed="false" data-detail="Interfaces denses, courbe d'apprentissage longue&nbsp;: formation, tâtonnements et support avant d'être vraiment opérationnel.">
+        <div class="di">02</div>
+        <h4>Prise en main difficile</h4>
+        <p class="dsub">Le temps perdu avant d'être productif.</p>
+      </button>
+      <button class="defaut" type="button" data-i="2" data-links="spec" aria-pressed="false" data-detail="Fermé et figé&nbsp;: c'est à vous de vous plier à l'outil, jamais l'inverse — même quand votre métier évolue.">
+        <div class="di">03</div>
+        <h4>Peu ouvert aux évolutions</h4>
+        <p class="dsub">Demain, vous changez de paramètres de travail. Le logiciel ne suit pas.</p>
+      </button>
+      <button class="defaut" type="button" data-i="3" data-links="cout" aria-pressed="false" data-detail="Abonnement par poste et par mois, indéfiniment. Une rente qui grimpe à chaque personne ajoutée à l'équipe.">
+        <div class="di">04</div>
+        <h4>Coût de licence élevé</h4>
+        <p class="dsub">Une dépense récurrente, sans fin.</p>
+      </button>
+    </div>
+
+    <div class="defaut-detail rv" id="defautDetail">
+      <span class="dd-k">En clair</span>
+      <p class="dd-text" id="ddText"></p>
+    </div>
+
+    <div class="resultat rv">
+      <div class="res-h"><span class="res-eq">=</span> Le résultat pour vous</div>
+      <p class="res-hint">Survolez ou cliquez un défaut — les conséquences liées s'illuminent.</p>
+      <div class="res-grid" id="resGrid">
+        <div class="ritem" data-key="cout"><span class="rn">Conséquence A</span><h4>Coût élevé en temps et en argent</h4></div>
+        <div class="ritem" data-key="prod"><span class="rn">Conséquence B</span><h4>Productivité ralentie</h4></div>
+        <div class="ritem" data-key="spec"><span class="rn">Conséquence C</span><h4>Spécificités non comblées par l'outil générique</h4></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="human sect" id="bascule" data-screen-label="La grande bascule" style="padding-top: 130px; background-color: #26221c">
+  
+<div class="wrap">
+    <div class="human-grid">
+      <div class="portrait rv filled">
+        <img src="uploads/Labyrinthe.png" alt="Un homme avance dans un labyrinthe vers un point de lumière vert">
+      </div>
+      <blockquote class="rv">
+        <span class="eyebrow">02.LA GRANDE BASCULE</span>
+        <p class="quote" style="margin-top: 20px; font-size: clamp(20px, 3.4vw, 30px); width: 100%; max-width: 720px">«&nbsp;Les applications <em class="hot">sur-mesure</em> ne sont plus l'apanage des grosses structures. Grâce à l'IA, les PME/TPE vont enfin disposer d'applications intuitives et légères, élaborées autour de leurs besoins spécifiques. <br>C'est la fin des usines à gaz qui étouffent&nbsp;<span style="font-size: clamp(20px, 3.4vw, 30px); letter-spacing: -0.01em; text-wrap-mode: initial;">la productivité et le chiffre d'affaires.&nbsp;»</span></p>
+        <div class="qfoot">
+          
+          <span class="who">Proposition de Valeur - M. Halimi, fondateur de FluXart Studio</span>
+        </div>
+      </blockquote>
+    </div>
+  </div></section>
+
+<section class="serv sect" id="service" data-screen-label="Service">
+  <div class="wrap">
+    <div class="sect-head rv" style="width: 100%; max-width: 800px">
+      <span class="eyebrow">03.SOLUTION B2B</span>
+      <h2 class="display">Faire <i style="color: #d2481a">mieux </i>avec moins.</h2>
+      <p class="lead" style="width: 100%; max-width: 877px">Votre gestion fait face à des frictions, des ralentissements, des angles morts ?<br>FluXart Studio vous propose un audit sur tous ces préjudices qui pèsent sur votre activité, puis vous propose une feuille de route simplifiée en 6 étapes.<br>Livraison possible en quelques jours pour les projets les plus simples.<br><br></p>
+    </div>
+
+    <div class="steps" style="margin-bottom: 50px">
+      <div class="step rv"><div class="sn">01</div><h3>Audit &amp; faisabilité</h3><p>On examine votre flux de travail et on valide, sans détour, ce qui est réalisable et utile.</p></div>
+      <div class="step rv"><div class="sn">02</div><h3>Cahier des charges</h3><p>On formalise et vous validez le plan : fonctions essentielles, périmètre clair, rien de superflu.</p></div>
+      <div class="step rv"><div class="sn">03</div><h3>Maquette fonctionnelle</h3><p>Une première version manipulable. Vous voyez et testez le produit avant qu'il existe vraiment.</p></div>
+      <div class="step rv"><div class="sn">04</div><h3>Feed-back client</h3><p>Vous essayez, vous commentez, on ajuste. C'est votre outil — il se cale sur votre geste.</p></div>
+      <div class="step rv"><div class="sn">05</div><h3>Produit fini</h3><p>Codage et livraison-express de la version finale, prête à l'emploi, taillée pour votre usage, plus jolie que la maquette.</p></div>
+      <div class="step rv"><div class="sn">06</div><h3>SAV gratuit 60 jours</h3><p>Deux mois de suivi et d'ajustements inclus. Vous n'êtes jamais seul après la livraison.</p></div>
+    </div>
+
+    <div class="pillars">
+      <div class="pillars-head rv">
+        <h3>Pourquoi FluXart Studio&nbsp;? <span>Nos 4 piliers.</span></h3>
+      </div>
+      <div class="acc rv" id="pillars">
+        <div class="acc-item open">
+          <button class="acc-head" type="button" aria-expanded="true">
+            <span class="acc-ic" aria-hidden="true"><svg viewBox="0 0 20 20" width="1em" height="1em"><path d="M0 0h20v20H0z" fill="none"></path><path fill="currentColor" d="M19.388.405a.605.605 0 0 0-1.141.399c.929 2.67-.915 4.664-2.321 5.732l-.568-.814c-.191-.273-.618-.5-.95-.504l-3.188.014a2.16 2.16 0 0 0-1.097.338L.729 12.157a1.01 1.01 0 0 0-.247 1.404l4.269 6.108c.32.455.831.4 1.287.082l9.394-6.588c.27-.191.582-.603.692-.918l.998-3.145c.11-.314.043-.793-.148-1.066l-.346-.496c1.888-1.447 3.848-4.004 2.76-7.133m-4.371 9.358a1.61 1.61 0 0 1-2.24-.396a1.614 1.614 0 0 1 .395-2.246a1.61 1.61 0 0 1 1.868.017c-.272.164-.459.26-.494.275a.606.606 0 0 0 .259 1.153q.13 0 .257-.059q.292-.137.619-.33a1.62 1.62 0 0 1-.664 1.586"></path></svg></span>
+            <span class="acc-num">01</span>
+            <span class="acc-title">Prix de l'application</span>
+            <svg class="acc-chev open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+          </button>
+          <div class="acc-body open"><div class="acc-body-in"><p>Grâce à l'assistance de l'IA, le <b>prix de conception a considérablement diminué</b>, tout comme le temps de réalisation. Ce qui demandait des semaines d'ingénierie se livre désormais en une fraction du coût.</p></div></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-head" type="button" aria-expanded="false">
+            <span class="acc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="1em" height="1em"><path d="M0 0h24v24H0z" fill="none"></path><path fill="currentColor" d="M9.875 12.125Q9 11.25 9 10t.875-2.125T12 7t2.125.875T15 10t-.875 2.125T12 13t-2.125-.875M6 23v-7.725q-.95-1.05-1.475-2.4T4 10q0-3.35 2.325-5.675T12 2t5.675 2.325T20 10q0 1.525-.525 2.875T18 15.275V23l-6-2zm10.25-8.75Q18 12.5 18 10t-1.75-4.25T12 4T7.75 5.75T6 10t1.75 4.25T12 16t4.25-1.75"></path></svg></span>
+            <span class="acc-num">02</span>
+            <span class="acc-title">Licence à vie</span>
+            <svg class="acc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+          </button>
+          <div class="acc-body"><div class="acc-body-in"><p>Un <b>coût unique d'achat</b> et votre application vous appartient. Terminé le système de redevance mensuelle, juste pour continuer à utiliser ce que vous avez déjà&nbsp;!</p></div></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-head" type="button" aria-expanded="false">
+            <span class="acc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.3l-6 6 2.8 2.8 6-6a4 4 0 0 0 5.3-5.4l-2.6 2.6-2.1-2.1z"></path></svg></span>
+            <span class="acc-num">03</span>
+            <span class="acc-title">Forfait support technique <span style="opacity:.6; font-weight:600; font-size:.8em;">6 mois</span></span>
+            <svg class="acc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+          </button>
+          <div class="acc-body"><div class="acc-body-in"><p>Vous mettez à jour votre système d'exploitation et votre application ne suit pas&nbsp;? Optez pour les <b>6 mois de support technique</b>. Nous nous engageons à adapter votre application au niveau système. Satisfait ou remboursé.</p></div></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-head" type="button" aria-expanded="false">
+            <span class="acc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.5"></circle><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="8" r="2.5"></circle><path d="M6 8.5v7M6 15.5C6 11 9 10 15 9"></path></svg></span>
+            <span class="acc-num">04</span>
+            <span class="acc-title">Forfait Évolution</span>
+            <svg class="acc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+          </button>
+          <div class="acc-body"><div class="acc-body-in"><p>Adaptez votre application aux nouvelles réalités de votre métier et incorporez de nouvelles fonctionnalités. Oui, c'est possible. Avec le <b>Forfait Évolution</b>, vous n'êtes plus prisonnier d'un logiciel obsolète&nbsp;: vous partez d'une base solide et connue, à laquelle vous greffez de nouvelles branches&nbsp;!</p></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="real sect" id="realisations" data-screen-label="Réalisations">
+  <div class="wrap">
+    <div class="sect-head rv">
+      <span class="eyebrow">04 — RÉALISATIONS</span>
+      <h2 class="display">De la fluidité<br>à la productivité</h2>
+      <p class="lead" style="width: 100%; max-width: 1018px; font-style: normal">Nous développons des solutions publiques et privées, mais guidés par une idée fixe : élaborer des interfaces simples,&nbsp;<i>user-friendly</i> afin de gagner du temps et limiter la charge cognitive de l'utilisateur.<br>Parce que l'ergonomie est un art, nous laissons volontiers la complexité aux ingénieurs et aux spécialistes.</p>
+    </div>
+
+    <div class="catalog-bar rv">
+      <span class="catalog-lbl">Contenu public</span>
+    </div>
+
+    <div class="showcase rv" id="showcase">
+      <div class="show-viewport">
+        <div class="show-track" id="showTrack">
+
+          <article class="proj" data-cat="prod gest" data-flag="Productivité" style="--cat:var(--cat-prod);">
+            <div class="proj-visual"><img src="uploads/Fluxart-ACT.png" alt="Alpha Charlie Tango" style="object-fit: cover; width: 770px; height: 568px; top: 1px; left: -1px"><span class="proj-flag">GESTIONNAIRE DU QUOTIDIEN</span></div>
+            <div class="proj-info">
+              <h3 class="proj-name"><div style="box-sizing: border-box; display: flex; flex-direction: column; gap: 12px"><span class="stub" style="font-size: 35px">Alpha•Charlie•Tango</span></div></h3>
+              <p class="proj-desc">Un "Gestionnaire de priorités" unique au monde, au sein d'un dashboard évolutif qui comprend aussi un agenda, un panneau de gestion budgétaire et une todolist. Une application sans équivalent sur le marché.</p>
+              <div class="proj-act">
+                <span class="proj-plat"><span class="lbl">Plateformes actuelles</span><b>MacOS</b></span>
+                <div class="proj-btns"><a href="https://alphacharlietango.com/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" style="height: 58px">En savoir plus</a></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="proj" data-cat="gest" data-flag="Gestionnaires" style="--cat:var(--cat-gest);">
+            <div class="proj-visual"><img src="uploads/Fluxart-Libertag.png" alt="LiberTag" style="object-fit: contain; width: 745px; flex-grow: 0"><span class="proj-flag">GESTIONNAIRE PHOTO</span></div>
+            <div class="proj-info">
+              <h3 class="proj-name"><span class="stub">LiberTag</span></h3>
+              <p class="proj-desc">La seule application qui permet un catalogage précis de ses milliers photos, grâce à un système d'étiquetage très puissant, compatible avec les grands logiciels d'édition photo du marché.</p>
+              <div class="proj-act">
+                <span class="proj-plat"><span class="lbl">Plateformes actuelles</span><b>Android</b></span>
+                <div class="proj-btns"><a href="https://libertag.app/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" style="height: 58px">En savoir plus</a></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="proj" data-cat="edit" data-flag="Editorial / E-commerce" style="--cat:var(--cat-edit);">
+            <div class="proj-visual"><img src="uploads/Fluxart-CanalAnimal.png" alt="Canal Animal" style="object-fit: cover; object-position: center top"><span class="proj-flag">EDITORIAL • E-COMMERCE</span></div>
+            <div class="proj-info">
+              <h3 class="proj-name"><span class="stub">Canal Animal</span></h3>
+              <p class="proj-desc">Un grand portail d'actualités animalières généraliste, pratiquant une veille sur une soixantaine de thèmes, et doublé d'une librairie animalière en concordance avec les articles publiés.</p>
+              <div class="proj-act">
+                <span class="proj-plat"><span class="lbl">Plateformes actuelles</span><b>Web</b></span>
+                <div class="proj-btns"><a href="https://www.canalanimal.fr/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" style="height: 58px">En savoir plus</a></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="proj" data-cat="util prod" data-flag="Utilitaires Mac" style="--cat:var(--cat-util);">
+            <div class="proj-visual"><img src="uploads/Fluxart-NoWay.png" alt="No-Way"><span class="proj-flag">UTILITAIRE BIEN-ÊTRE</span></div>
+            <div class="proj-info">
+              <h3 class="proj-name"><span class="stub">No-Way</span></h3>
+              <p class="proj-desc">Une puissante application de blocage web et d'applications pour limiter l'usage de son téléphone. Dispose également d'un espace parental pour réguler l'utilisation du mobile de leurs enfants, sans pour autant être intrusif.</p>
+              <div class="proj-act">
+                <span class="proj-plat"><span class="lbl">Plateformes actuelles</span><b>Android</b></span>
+                <div class="proj-btns"><a href="https://no-way.app/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" style="height: 58px">En savoir plus</a></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="proj" data-cat="ext prod" data-flag="Extensions" style="--cat:var(--cat-ext);">
+            <div class="proj-visual"><img src="uploads/Fluxart-Searchidian.png" alt="Searchidian" style="object-fit: cover"><span class="proj-flag">UTILITAIRE OBSIDIAN</span></div>
+            <div class="proj-info">
+              <h3 class="proj-name"><span class="stub">Searchidian</span></h3>
+              <p class="proj-desc">Un moteur de recherche de tous les coffres de l'application Obsidian, en une seule fenêtre, à partir de la barre de statut du Mac.</p>
+              <div class="proj-act">
+                <span class="proj-plat"><span class="lbl">Plateformes actuelles</span><b>MacOS</b></span>
+                <div class="proj-btns"><a href="https://github.com/Fluxart-Studio/Searchidian" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" style="height: 58px">En savoir plus</a></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="proj" data-cat="prod" data-flag="Productivité" style="--cat:var(--cat-prod);">
+            <div class="proj-visual"><img src="uploads/Fluxart-Simple Tasks Blocks.png" alt="Simple Task Blocks" style="object-fit: cover"><span class="proj-flag">EXTENSION OBSIDIAN • GESTIONNAIRE</span></div>
+            <div class="proj-info">
+              <h3 class="proj-name"><span class="stub" style="font-size: 40px">Simple Task Blocks</span></h3>
+              <p class="proj-desc">Un gestionnaire de tâches, par catégories, sous forme de todo list. Simplifie énormément l'usage des checkbox sur Obsidian.</p>
+              <div class="proj-act">
+                <span class="proj-plat"><span class="lbl">Plateformes actuelles</span><b>Mac•PC•Linux</b></span>
+                <div class="proj-btns"><a href="https://github.com/Fluxart-Studio/Simple-Tasks-Block-Advanced" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" style="height: 58px">En savoir plus</a></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="proj" data-cat="gest util" data-flag="Gestionnaires" style="--cat:var(--cat-gest);">
+            <div class="proj-visual"><img src="uploads/Fluxart-Flashanki.png" alt="FlashAnki" style="object-fit: cover"><span class="proj-flag">EXTENSION OBSIDIAN • CONVERTISSEUR</span></div>
+            <div class="proj-info">
+              <h3 class="proj-name"><span class="stub">FlashAnki</span></h3>
+              <p class="proj-desc">Un module de création de cartes-mémoire à partir de notes Obsidian, à destination de l'application de révision Anki.</p>
+              <div class="proj-act">
+                <span class="proj-plat"><span class="lbl">Plateformes actuelles</span><b>Mac•PC•Linux</b></span>
+                <div class="proj-btns"><a href="https://github.com/Fluxart-Studio/FlashAnki" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" style="height: 58px">En savoir plus</a></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="proj" data-cat="edit ext" data-flag="Editorial / E-commerce" style="--cat:var(--cat-edit);">
+            <div class="proj-visual"><img src="uploads/Fluxart-Trooks.png" alt="Trooks"><span class="proj-flag">UTILITAIRE PRODUCTIVITÉ</span></div>
+            <div class="proj-info">
+              <h3 class="proj-name"><span class="stub">Trooks</span></h3>
+              <p class="proj-desc">Un petit utilitaire bien pratique pour accéder rapidement à ses images, ses téléchargements, et à l'historique du presse-papier.</p>
+              <div class="proj-act">
+                <span class="proj-plat"><span class="lbl">Plateformes actuelles</span><b>MacOS</b></span>
+                <div class="proj-btns"><a href="https://github.com/Fluxart-Studio/Trooks" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" style="height: 58px">En savoir plus</a></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="proj" data-cat="util ext" data-flag="Extensions" style="--cat:var(--cat-ext);">
+            <div class="proj-visual"><img src="uploads/Fluxart-Diskeye.png" alt="Diskeye"><span class="proj-flag">MAINTENANCE • MONITORING</span></div>
+            <div class="proj-info">
+              <h3 class="proj-name"><span class="stub">Diskeye</span></h3>
+              <p class="proj-desc">Une surveillance continue dans la barre de statut de l'espace disponible sur vos disques durs, incluant de petites options de nettoyage pour regagner de la place.</p>
+              <div class="proj-act">
+                <span class="proj-plat"><span class="lbl">Plateformes actuelles</span><b>MacOS</b></span>
+                <div class="proj-btns"><a href="https://github.com/Fluxart-Studio/Diskeye" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" style="height: 58px">En savoir plus</a></div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <div class="show-nav">
+        <div class="show-arrows">
+          <button class="cbtn2" type="button" id="showPrev" aria-label="Projet précédent">‹</button>
+          <button class="cbtn2" type="button" id="showNext" aria-label="Projet suivant">›</button>
+        </div>
+        <div class="show-dots" id="showDots" aria-label="Sélecteur de projet"></div>
+        <div class="show-count"><b id="showCur">01</b> / <span id="showTot">06</span></div>
+      </div>
+    </div>
+
+    
+  </div>
+</section>
+
+<section class="cta" data-screen-label="CTA">
+  <div class="wrap cta-in rv">
+    <h2>Un problème à résoudre ?<br>Parlons-en <em class="hot">simplement</em>.</h2>
+    <p class="lead">Décrivez votre besoin en quelques lignes. <br>Réponse assurée dans les plus brefs délais.</p>
+    <div class="cta-btns">
+      <a href="mailto:admin@fluxart.fr" class="btn btn-on-ink btn-arr">Écrire à FluXart
+        <svg viewBox="0 0 16 16" fill="none"><path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a>
+      
+    </div>
+  </div>
+</section>
+
+<footer data-screen-label="Footer">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <span class="mk" aria-hidden="true" style="width:24px;height:24px;display:inline-block;">
+        <svg viewBox="0 0 30 30" fill="none"><rect x="1" y="1" width="28" height="28" rx="5" fill="#241F17"></rect><path d="M9 21V9h11" stroke="#C41E1A" stroke-width="3" stroke-linecap="square"></path><path d="M9 15h7" stroke="#F3EDE2" stroke-width="3" stroke-linecap="square"></path></svg>
+      </span>
+      FluXart Studio
+    </div>
+    <div class="foot-links">
+      
+      
+      
+      
+    </div>
+    <div style="font-family:var(--font-mono);font-size:12.5px;">© 2026 - Conçu par FluXart Studio</div>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;fluxCoreX&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 13, &quot;min&quot;: -15, &quot;max&quot;: 115, &quot;step&quot;: 1, &quot;unit&quot;: &quot;%&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Fond flux (hero)&quot; },
+  &quot;fluxCoreY&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 82, &quot;min&quot;: -15, &quot;max&quot;: 115, &quot;step&quot;: 1, &quot;unit&quot;: &quot;%&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Fond flux (hero)&quot; },
+  &quot;fluxAccent&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#B23A2E&quot;, &quot;options&quot;: [&quot;#C53A24&quot;, &quot;#B23A2E&quot;, &quot;#A8702A&quot;, &quot;#1F8A5B&quot;, &quot;#2A5BD0&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Fond flux (hero)&quot; },
+  &quot;fluxDensity&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 58, &quot;min&quot;: 18, &quot;max&quot;: 200, &quot;step&quot;: 1, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Fond flux (hero)&quot; },
+  &quot;fluxSpacing&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 5, &quot;min&quot;: 2, &quot;max&quot;: 36, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Fond flux (hero)&quot; },
+  &quot;fluxTurns&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 2.2, &quot;min&quot;: 0.6, &quot;max&quot;: 2.6, &quot;step&quot;: 0.05, &quot;unit&quot;: &quot;tours&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Fond flux (hero)&quot; },
+  &quot;fluxOpacity&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 0.72, &quot;min&quot;: 0, &quot;max&quot;: 1, &quot;step&quot;: 0.01, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Fond flux (hero)&quot; },
+  &quot;fluxOpacityStart&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 0.43, &quot;min&quot;: 0, &quot;max&quot;: 1, &quot;step&quot;: 0.01, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Fond flux — dégradé&quot; },
+  &quot;fluxOpacityEnd&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 0.12, &quot;min&quot;: 0, &quot;max&quot;: 1, &quot;step&quot;: 0.01, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Fond flux — dégradé&quot; },
+  &quot;fluxAnimate&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Fond flux (hero)&quot; },
+  &quot;fluxFlipH&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Fond flux (hero)&quot; },
+  &quot;fluxFlipV&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Fond flux (hero)&quot; },
+  &quot;iconColor&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#C41E1A&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Icônes — groupe&quot; },
+  &quot;iconScale&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 2.55, &quot;min&quot;: 0.5, &quot;max&quot;: 6, &quot;step&quot;: 0.05, &quot;unit&quot;: &quot;×&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icônes — groupe&quot; },
+  &quot;iconRotate&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 0, &quot;min&quot;: -180, &quot;max&quot;: 180, &quot;step&quot;: 1, &quot;unit&quot;: &quot;°&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icônes — groupe&quot; },
+  &quot;iconX&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: -35, &quot;min&quot;: -4000, &quot;max&quot;: 4000, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icônes — groupe&quot; },
+  &quot;iconY&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 395, &quot;min&quot;: -800, &quot;max&quot;: 800, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icônes — groupe&quot; },
+  &quot;icon1Opacity&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 1, &quot;min&quot;: 0, &quot;max&quot;: 1, &quot;step&quot;: 0.01, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icône 1&quot; },
+  &quot;icon1X&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: -9, &quot;min&quot;: -1200, &quot;max&quot;: 1200, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icône 1&quot; },
+  &quot;icon1Y&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: -280, &quot;min&quot;: -800, &quot;max&quot;: 800, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icône 1&quot; },
+  &quot;icon2Opacity&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 0.17, &quot;min&quot;: 0, &quot;max&quot;: 1, &quot;step&quot;: 0.01, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icône 2&quot; },
+  &quot;icon2X&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: -329, &quot;min&quot;: -1200, &quot;max&quot;: 1200, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icône 2&quot; },
+  &quot;icon2Y&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: -276, &quot;min&quot;: -800, &quot;max&quot;: 800, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icône 2&quot; },
+  &quot;icon3Opacity&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 0.12, &quot;min&quot;: 0, &quot;max&quot;: 1, &quot;step&quot;: 0.01, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icône 3&quot; },
+  &quot;icon3X&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: -118, &quot;min&quot;: -1200, &quot;max&quot;: 1200, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icône 3&quot; },
+  &quot;icon3Y&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: -271, &quot;min&quot;: -800, &quot;max&quot;: 800, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icône 3&quot; },
+  &quot;icon4Opacity&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 0.22, &quot;min&quot;: 0, &quot;max&quot;: 1, &quot;step&quot;: 0.01, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icône 4&quot; },
+  &quot;icon4X&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 0, &quot;min&quot;: -1200, &quot;max&quot;: 1200, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icône 4&quot; },
+  &quot;icon4Y&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: -800, &quot;min&quot;: -800, &quot;max&quot;: 800, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Icône 4&quot; },
+  &quot;titleScale&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 1, &quot;min&quot;: 0.5, &quot;max&quot;: 2, &quot;step&quot;: 0.01, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Titre — global&quot; },
+  &quot;ph1X&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: -32, &quot;min&quot;: -1200, &quot;max&quot;: 1200, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Titre — ligne 1&quot; },
+  &quot;ph1Y&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 27, &quot;min&quot;: -800, &quot;max&quot;: 800, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Titre — ligne 1&quot; },
+  &quot;ph2X&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 154, &quot;min&quot;: -1200, &quot;max&quot;: 1200, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Titre — ligne 2&quot; },
+  &quot;ph2Y&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 69, &quot;min&quot;: -800, &quot;max&quot;: 800, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Titre — ligne 2&quot; },
+  &quot;textX&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: -36, &quot;min&quot;: -1200, &quot;max&quot;: 1200, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Texte d'intro&quot; },
+  &quot;textY&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 8, &quot;min&quot;: -800, &quot;max&quot;: 800, &quot;step&quot;: 1, &quot;unit&quot;: &quot;px&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Texte d'intro&quot; },
+  &quot;textWidth&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 90, &quot;min&quot;: 18, &quot;max&quot;: 120, &quot;step&quot;: 1, &quot;unit&quot;: &quot;ch&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Texte d'intro&quot; }
+}">
+class Component extends DCLogic {
+  state = { savedAt: null, copied: false };
+
+  DEFAULTS = {
+    fluxCoreX:13, fluxCoreY:82, fluxAccent:'#B23A2E', fluxDensity:58, fluxSpacing:5, fluxTurns:2.2,
+    fluxAnimate:true, fluxFlipH:false, fluxFlipV:true, fluxOpacity:0.72, fluxOpacityStart:0.43, fluxOpacityEnd:0.12,
+    iconColor:'#C41E1A', iconRotate:0, iconScale:2.55, iconX:-35, iconY:395,
+    icon1Opacity:1, icon2Opacity:0.17, icon3Opacity:0.12, icon4Opacity:0.22,
+    icon1X:-9, icon1Y:-280, icon2X:-329, icon2Y:-276, icon3X:-118, icon3Y:-271, icon4X:0, icon4Y:-800,
+    titleScale:1, ph1X:-32, ph1Y:27, ph2X:154, ph2Y:69, textX:-36, textY:8, textWidth:90
+  };
+  _eff = null;
+
+  tweakKeys() { return Object.keys(this.DEFAULTS); }
+
+  loadSaved() {
+    let s = {};
+    try { s = JSON.parse(localStorage.getItem('fluxart_tweaks') || '{}') || {}; } catch (e) {}
+    return s;
+  }
+
+  // Effective tweak values, computed once per render.
+  // A genuine host override (value changed live, or differing from the baseline
+  // default) wins; otherwise we fall back to the value last saved in localStorage,
+  // then to the default. This is what makes tweaks survive reloads & file rewrites
+  // even though the host editor may drop its in-memory overrides.
+  computeEffective() {
+    const p = this.props || {};
+    const prev = this._prevProps;
+    const hasPrev = !!prev;
+    const saved = this._savedCache || (this._savedCache = this.loadSaved());
+    const out = {};
+    this.tweakKeys().forEach(k => {
+      const cur = p[k];
+      const defined = cur !== undefined && cur !== null;
+      const overridden = defined && cur !== this.DEFAULTS[k];
+      const changed = hasPrev && cur !== prev[k];
+      if (overridden || changed) out[k] = cur;
+      else if (saved[k] !== undefined && saved[k] !== null) out[k] = saved[k];
+      else out[k] = defined ? cur : this.DEFAULTS[k];
+    });
+    this._prevProps = { ...p };
+    this._eff = out;
+    return out;
+  }
+
+  snapshot() { return this._eff || this.computeEffective(); }
+
+  persist() {
+    const eff = this._eff || this.computeEffective();
+    const json = JSON.stringify(eff);
+    if (json === this._lastJson) return;
+    this._lastJson = json;
+    this._savedCache = { ...eff };
+    try { localStorage.setItem('fluxart_tweaks', json); } catch (e) {}
+    this.setState({ savedAt: Date.now() });
+  }
+  componentDidUpdate() { this.persist(); }
+
+  renderVals() {
+    const p = this.props;
+    const two = n => String(n).padStart(2, '0');
+    let savedLabel = 'Auto-sauvegarde activée';
+    if (this.state.copied) savedLabel = 'Config copiée ✓';
+    else if (this.state.savedAt) {
+      const d = new Date(this.state.savedAt);
+      savedLabel = `Sauvegardé à ${two(d.getHours())}:${two(d.getMinutes())}:${two(d.getSeconds())}`;
+    }
+    const copyTweaks = () => {
+      const json = JSON.stringify(this.snapshot(), null, 2);
+      const done = () => { this.setState({ copied: true }); setTimeout(() => this.setState({ copied: false }), 1400); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).then(done, done);
+      else done();
+    };
+    const e = this.computeEffective();
+    const t = (x, y) => `translate(${x ?? 0}px, ${y ?? 0}px)`;
+    return {
+      fluxCoreX: e.fluxCoreX,
+      fluxCoreY: e.fluxCoreY,
+      fluxAccent: e.fluxAccent,
+      fluxDensity: e.fluxDensity,
+      fluxSpacing: e.fluxSpacing,
+      fluxTurns: e.fluxTurns,
+      fluxAnimate: e.fluxAnimate,
+      fluxFlipH: e.fluxFlipH,
+      fluxFlipV: e.fluxFlipV,
+      fluxOpacity: e.fluxOpacity,
+      fluxOpacityStart: e.fluxOpacityStart,
+      fluxOpacityEnd: e.fluxOpacityEnd,
+      savedLabel,
+      copyTweaks,
+      textMaxW: `${e.textWidth}ch`,
+      titleTransform: `scale(${e.titleScale})`,
+      iconColor: e.iconColor,
+      icon1Opacity: e.icon1Opacity,
+      icon2Opacity: e.icon2Opacity,
+      icon3Opacity: e.icon3Opacity,
+      icon4Opacity: e.icon4Opacity,
+      icon1Transform: `${t(e.icon1X, e.icon1Y)} rotate(${e.iconRotate}deg)`,
+      icon2Transform: `${t(e.icon2X, e.icon2Y)} rotate(${e.iconRotate}deg)`,
+      icon3Transform: `${t(e.icon3X, e.icon3Y)} rotate(${e.iconRotate}deg)`,
+      icon4Transform: `${t(e.icon4X, e.icon4Y)} rotate(${e.iconRotate}deg)`,
+      iconTransform: `translate(${e.iconX}px, ${e.iconY}px) scale(${e.iconScale})`,
+      ph1Transform: t(e.ph1X, e.ph1Y),
+      ph2Transform: t(e.ph2X, e.ph2Y),
+      textTransform: t(e.textX, e.textY),
+    };
+  }
+  componentDidMount() {
+    this.persist();
+    const root = document;
+
+    // reveal on scroll
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.16, rootMargin: '0px 0px -8% 0px' });
+    root.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+    // strike-through animation trigger for the filter card
+    const fc = root.getElementById('filterCard');
+    if (fc) new IntersectionObserver((es, o) => {
+      es.forEach(e => { if (e.isIntersecting) { fc.classList.add('in'); o.disconnect(); } });
+    }, { threshold: 0.4 }).observe(fc);
+
+    // active nav link
+    const links = [...root.querySelectorAll('.nav-links a')];
+    const map = links.map(a => ({ a, sec: root.querySelector(a.getAttribute('href')) })).filter(x => x.sec);
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const m = map.find(x => x.sec === e.target);
+          if (m) m.a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    map.forEach(x => spy.observe(x.sec));
+
+    // réalisations — vitrine carousel + filtre catégorie
+    const track   = root.getElementById('showTrack');
+    const allProj = [...track.querySelectorAll('.proj')];
+    const dotsWrap = root.getElementById('showDots');
+    const prevBtn = root.getElementById('showPrev');
+    const nextBtn = root.getElementById('showNext');
+    const curEl   = root.getElementById('showCur');
+    const totEl   = root.getElementById('showTot');
+    const filts   = [...root.querySelectorAll('.filt')];
+
+    let order = allProj.slice();
+    let i = 0;
+    const pad = n => String(n).padStart(2, '0');
+
+    function render() {
+      allProj.forEach(p => p.style.display = order.includes(p) ? '' : 'none');
+      i = Math.max(0, Math.min(i, order.length - 1));
+      track.style.transform = 'translateX(' + (-i * 100) + '%)';
+      dotsWrap.innerHTML = '';
+      order.forEach((p, k) => {
+        const d = document.createElement('button');
+        d.type = 'button'; d.className = 'dot' + (k === i ? ' on' : '');
+        d.style.setProperty('--cat', getComputedStyle(p).getPropertyValue('--cat'));
+        d.setAttribute('aria-label', 'Projet ' + (k + 1));
+        d.addEventListener('click', () => go(k));
+        dotsWrap.appendChild(d);
+      });
+      curEl.textContent = order.length ? pad(i + 1) : '00';
+      totEl.textContent = pad(order.length);
+      prevBtn.disabled = nextBtn.disabled = order.length <= 1;
+    }
+    function go(n) {
+      if (!order.length) return;
+      i = (n + order.length) % order.length;
+      track.style.transform = 'translateX(' + (-i * 100) + '%)';
+      [...dotsWrap.children].forEach((d, k) => d.classList.toggle('on', k === i));
+      curEl.textContent = pad(i + 1);
+    }
+    prevBtn.addEventListener('click', () => go(i - 1));
+    nextBtn.addEventListener('click', () => go(i + 1));
+
+    filts.forEach(f => {
+      const key = f.dataset.filter, n = f.querySelector('.n');
+      if (n) n.textContent = key === 'all' ? allProj.length
+        : allProj.filter(p => p.dataset.cat.split(' ').includes(key)).length;
+    });
+    function applyFilter(key) {
+      filts.forEach(f => f.setAttribute('aria-pressed', String(f.dataset.filter === key)));
+      order = allProj.filter(p => key === 'all' || p.dataset.cat.split(' ').includes(key));
+      i = 0;
+      render();
+    }
+    filts.forEach(f => f.addEventListener('click', () => applyFilter(f.dataset.filter)));
+
+    // glisser horizontalement
+    let dragX = null, dragDX = 0;
+    const vp = track.parentElement;
+    function down(x) { dragX = x; dragDX = 0; track.classList.add('drag'); }
+    function move(x) {
+      if (dragX === null) return;
+      dragDX = x - dragX;
+      track.style.transform = 'translateX(calc(' + (-i * 100) + '% + ' + dragDX + 'px))';
+    }
+    function up() {
+      if (dragX === null) return;
+      track.classList.remove('drag');
+      const th = vp.clientWidth * 0.18;
+      if (dragDX <= -th) go(i + 1);
+      else if (dragDX >= th) go(i - 1);
+      else go(i);
+      dragX = null;
+    }
+    vp.addEventListener('pointerdown', e => { down(e.clientX); });
+    window.addEventListener('pointermove', e => { if (dragX !== null) move(e.clientX); });
+    window.addEventListener('pointerup', up);
+
+    render();
+
+    // interactive price module
+    const LV = [
+      { amt: '[ montant ]', delay: '≈ 3 semaines', bars: [1,0,0] },
+      { amt: '[ montant ]', delay: '≈ 10 jours',   bars: [1,1,0] },
+      { amt: '[ montant ]', delay: '≈ 72 heures',  bars: [1,1,1] }
+    ];
+    const segBtns = [...root.querySelectorAll('.seg button')];
+    const barEls = [...root.querySelectorAll('#bars .bar')];
+    const amtEl = root.getElementById('amt');
+    const delayEl = root.getElementById('delay');
+    if (amtEl && delayEl) {
+      const setLevel = (lv) => {
+        segBtns.forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.lvl === lv)));
+        barEls.forEach((b, k) => b.classList.toggle('on', LV[lv].bars[k] === 1));
+        amtEl.textContent = LV[lv].amt;
+        delayEl.textContent = LV[lv].delay;
+      };
+      segBtns.forEach(b => b.addEventListener('click', () => setLevel(+b.dataset.lvl)));
+      setLevel(0);
+    }
+
+    // 01 — Le constat : organigramme interactif
+    const defautBtns = [...root.querySelectorAll('#defauts .defaut')];
+    const ddText = root.getElementById('ddText');
+    const resItems = [...root.querySelectorAll('#resGrid .ritem')];
+    if (defautBtns.length && ddText) {
+      const selectDefaut = (idx) => {
+        defautBtns.forEach((b, k) => b.setAttribute('aria-pressed', String(k === idx)));
+        const active = defautBtns[idx];
+        ddText.innerHTML = active.dataset.detail;
+        const links = active.dataset.links.split(' ');
+        resItems.forEach(r => r.classList.toggle('hot', links.includes(r.dataset.key)));
+      };
+      defautBtns.forEach((b, k) => {
+        b.addEventListener('click', () => selectDefaut(k));
+        b.addEventListener('mouseenter', () => selectDefaut(k));
+      });
+      selectDefaut(0);
+    }
+
+    // 03 — Les 4 piliers : accordéon déroulant (classe sur l'élément qui s'anime, comme le constat)
+    const accItems = [...root.querySelectorAll('#pillars .acc-item')];
+    accItems.forEach(item => {
+      item.querySelector('.acc-head').addEventListener('click', () => {
+        const willOpen = !item.classList.contains('open');
+        accItems.forEach(it => {
+          const o = it === item && willOpen;
+          it.classList.toggle('open', o);
+          it.querySelector('.acc-body').classList.toggle('open', o);
+          it.querySelector('.acc-chev').classList.toggle('open', o);
+          it.querySelector('.acc-head').setAttribute('aria-expanded', String(o));
+        });
+      });
+    });
+  }
+}
+</script>
+</body>
+</html>
