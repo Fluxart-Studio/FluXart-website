@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logo FluxArt Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=block" rel="stylesheet">
+<style>
+:root{ --nuit:#14213D; --page:#E9E6E0; --ink:#1B2A4A; --muted:#5d6676; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:15px/1.5 system-ui,-apple-system,sans-serif;padding:32px 16px 64px}
+main{max-width:1180px;margin:0 auto}
+h1{font-family:"Dela Gothic One";font-weight:400;font-size:28px;margin:0 0 6px}
+.intro{color:var(--muted);margin:0 0 20px;max-width:760px}
+.ctrl{display:flex;flex-wrap:wrap;gap:16px;align-items:center;background:#fff;border:2px solid var(--nuit);border-radius:10px;padding:12px 16px;margin-bottom:48px}
+.ctrl label{font-weight:600}
+.ctrl output{font-variant-numeric:tabular-nums;min-width:48px;display:inline-block}
+h2{font-family:"Dela Gothic One";font-weight:400;font-size:20px;margin:48px 0 16px}
+.ctrl + h2{margin-top:0}
+.card{background:#fff;border:2px solid var(--nuit);border-radius:12px;margin-bottom:24px;overflow:hidden}
+.card header{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:12px 16px;border-bottom:2px solid var(--nuit)}
+.card header b{font-family:"Dela Gothic One";font-weight:400;font-size:15px;white-space:nowrap}
+.card header span{color:var(--muted);font-size:13px}
+.tiles{display:grid;grid-template-columns:1fr 1fr}
+.tile{position:relative;display:flex;align-items:center;justify-content:center;min-height:200px;padding:32px 16px;overflow:hidden}
+.tile svg{display:block;max-width:100%;height:auto}
+.light{background-color:#fff;background-image:linear-gradient(45deg,#eee 25%,transparent 25%,transparent 75%,#eee 75%),linear-gradient(45deg,#eee 25%,transparent 25%,transparent 75%,#eee 75%);background-size:16px 16px;background-position:0 0,8px 8px}
+.dark{background-color:#0c1426;background-image:linear-gradient(45deg,#16203a 25%,transparent 25%,transparent 75%,#16203a 75%),linear-gradient(45deg,#16203a 25%,transparent 25%,transparent 75%,#16203a 75%);background-size:16px 16px;background-position:0 0,8px 8px}
+.tile + .tile{border-left:2px solid var(--nuit)}
+.tag{position:absolute;top:8px;left:10px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;opacity:.6}
+.dark .tag{color:#fff}
+.rung{display:grid;grid-template-columns:120px 1fr;border-top:2px solid var(--nuit)}
+.rung .stack{display:grid;min-width:0}
+.rung .stack .tile + .tile{border-left:0;border-top:2px solid var(--nuit)}
+.rung:first-child{border-top:0}
+.rung .meta{padding:12px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;justify-content:center;border-right:2px solid var(--nuit)}
+.rung .meta b{color:var(--ink);font-size:14px}
+.rung .tile{min-height:0;padding:24px 16px}
+@media (max-width:760px){
+  .tiles{grid-template-columns:1fr}
+  .tile + .tile{border-left:0;border-top:2px solid var(--nuit)}
+  .rung{grid-template-columns:1fr}
+  .rung .meta{border-right:0;border-bottom:2px solid var(--nuit);flex-direction:row;gap:12px}
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>FluxArt Studio — maquettes de marque</h1>
+  <p class="intro">Police Dela Gothic One. Le trait «&nbsp;\&nbsp;» du X se prolonge en barre au-dessus de FLU et sous ART. Chaque maquette existe en version bleu nuit (fonds clairs) et version ivoire (fonds sombres). Le damier = fond transparent.</p>
+
+  <div class="ctrl">
+    <label for="cap">Plafond du ©</label>
+    <input id="cap" type="range" min="8" max="32" value="16">
+    <output id="capOut">16&nbsp;px</output>
+    <span style="color:var(--muted);font-size:13px">Le © prend la hauteur des lettres, sans jamais dépasser ce plafond.</span>
+  </div>
+
+  <h2>Version retenue</h2>
+  <div id="synthese"></div>
+
+  <h2>Échelle des hauteurs (version retenue)</h2>
+  <div class="card" id="ladder"></div>
+
+  <h2>Variantes de départ</h2>
+  <div id="variants"></div>
+</main>
+
+<script>
+const FONT = '"Dela Gothic One"';
+const C = {nuit:'#14213D',nuit2:'#1B2A4A',acier:'#3D5A8C',ciel:'#8FB0E0',ivoire:'#F4ECDD',ivoire2:'#EADBC0',sable:'#C9A46A',cuivre:'#D98E5F'};
+const NS = 'http://www.w3.org/2000/svg';
+const ctx = document.createElement('canvas').getContext('2d');
+
+function meas(t, size=100, ls=0){
+  ctx.font = `${size}px ${FONT}`;
+  ctx.letterSpacing = ls + 'px';
+  const r = ctx.measureText(t);
+  return {w:r.width, l:r.actualBoundingBoxLeft, r:r.actualBoundingBoxRight, a:r.actualBoundingBoxAscent};
+}
+function el(n, a, p){ const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; }
+function poly(pts, fill, p){ return el('polygon', {points: pts.map(q=>q.join(',')).join(' '), fill}, p); }
+
+/* Construit le logo. h = hauteur rendue en px, capPx = plafond du © en px. */
+function build(o, h, capPx){
+  const cap = meas('F').a;
+  const bw = o.barW, gap = o.barGap;
+  const flu = meas('FLU'), art = meas('ART');
+  const fluL = -flu.l - o.over;
+  const x0 = flu.w + o.gx, w = o.xw * cap;
+  const artX = x0 + w + o.gx;
+  const artR = artX + art.r + o.over;
+  const topY = -cap - gap - bw, botY = gap + bw;
+  // uniform : les traits du X ont exactement l'épaisseur des barres
+  const H = botY - topY;
+  const d = o.uniform ? bw * Math.hypot(H, w) / H : o.diagW;
+
+  let right = artR, bottom = botY, studio = null;
+  if (o.studio === 'inline'){
+    const m = meas('STUDIO', 100*o.sScale, o.sLs);
+    const sx = artR + o.wordGap;
+    studio = {x:sx, y:0, anchor:'start'};
+    right = sx + m.w - o.sLs;
+  } else if (o.studio === 'stack'){
+    const m = meas('STUDIO', 100*o.sScale, o.sLs);
+    studio = {x:artR + o.sLs, y:botY + o.stackGap + m.a, anchor:'end'};
+    bottom = studio.y;
+  }
+
+  const pad = 6;
+  const vbY = topY - pad, vbH = (bottom + pad) - vbY;
+  const upx = vbH / h;                       // unités SVG par pixel rendu
+  const cSize = Math.min(cap, capPx * upx);  // © = hauteur des lettres, plafonnée
+  const cx0 = right + Math.max(cap*0.14, 4*upx);
+  const vbX = fluL - pad, vbW = cx0 + cSize + pad - vbX;
+
+  const svg = el('svg', {viewBox:`${vbX} ${vbY} ${vbW} ${vbH}`, width:(vbW/upx).toFixed(1), height:h});
+  const g = el('g', {}, svg);
+  const text = (t, x, y, fill, size=100, ls=0, anchor='start') => {
+    const e = el('text', {x, y, fill, 'font-family':'Dela Gothic One', 'font-size':size, 'text-anchor':anchor}, g);
+    if (ls) e.setAttribute('letter-spacing', ls);
+    e.textContent = t; return e;
+  };
+  text('FLU', 0, 0, o.letters);
+  text('ART', artX, 0, o.letters);
+
+  const slash = () => o.fullX
+    ? poly([[x0,botY],[x0+d,botY],[x0+w,topY],[x0+w-d,topY]], o.slash, g)
+    : poly([[x0,0],[x0+d,0],[x0+w,-cap],[x0+w-d,-cap]], o.slash, g);
+  const z = () => {
+    poly([[fluL,topY],[x0+d,topY],[x0+d,topY+bw],[fluL,topY+bw]], o.z, g);
+    poly([[x0,topY],[x0+d,topY],[x0+w,botY],[x0+w-d,botY]], o.z, g);
+    poly([[x0+w-d,botY-bw],[artR,botY-bw],[artR,botY],[x0+w-d,botY]], o.z, g);
+  };
+  if (o.slashOnTop){ z(); slash(); } else { slash(); z(); }
+
+  if (studio) text('STUDIO', studio.x, studio.y, o.sColor, 100*o.sScale, o.sLs, studio.anchor);
+
+  // ©, posé sur la ligne de base
+  const sw = Math.max(cSize*0.11, 1.2*upx), r = cSize/2 - sw/2;
+  const cxm = cx0 + cSize/2, cym = -cSize/2;
+  el('circle', {cx:cxm, cy:cym, r, fill:'none', stroke:o.copy, 'stroke-width':sw}, g);
+  const ir = cSize*0.2, a = 0.95;
+  el('path', {d:`M ${cxm+ir*Math.cos(a)} ${cym-ir*Math.sin(a)} A ${ir} ${ir} 0 1 0 ${cxm+ir*Math.cos(a)} ${cym+ir*Math.sin(a)}`,
+    fill:'none', stroke:o.copy, 'stroke-width':sw}, g);
+  svg.dataset.cpx = (cSize/upx).toFixed(1);
+  return svg;
+}
+
+const base = {barW:7, diagW:28, barGap:12, gx:8, xw:1.15, over:0, studio:'inline', sScale:1, sLs:0, wordGap:46, stackGap:14, fullX:false, slashOnTop:false};
+const S = [
+  {name:'Retenue · monochrome + STUDIO dessous', note:'Variante 7 monochrome, STUDIO déplacé sous la barre basse de ART, en bleu plus clair.',
+    o:{studio:'stack', sScale:0.34, sLs:14, stackGap:18},
+    L:{letters:C.nuit, z:C.nuit, slash:C.nuit, sColor:C.acier, copy:C.nuit},
+    D:{letters:C.ivoire, z:C.ivoire, slash:C.ivoire, sColor:C.sable, copy:C.ivoire}},
+];
+const SH = [130];
+const V = [
+  {name:'1 · Fidèle au croquis', note:'Barres fines comme le trait de stylo, le Z en bleu acier, l’autre trait du X dans la couleur des lettres.',
+    L:{letters:C.nuit2, z:C.acier, slash:C.nuit2, sColor:C.nuit2, copy:C.nuit2},
+    D:{letters:C.ivoire, z:C.sable, slash:C.ivoire, sColor:C.ivoire, copy:C.ivoire}},
+  {name:'2 · X bicolore cuivre', note:'Le Z garde la couleur des lettres, le contre-trait du X passe en cuivre chaud.',
+    L:{letters:C.nuit2, z:C.nuit2, slash:C.cuivre, sColor:C.nuit2, copy:C.nuit2, slashOnTop:true},
+    D:{letters:C.ivoire, z:C.ivoire, slash:C.cuivre, sColor:C.ivoire, copy:C.ivoire, slashOnTop:true}},
+  {name:'3 · Barres épaisses', note:'Barres aussi grasses que les lettres. Nuit + bleu ciel, ou ivoire + sable.',
+    o:{barW:15, barGap:10},
+    L:{letters:C.nuit2, z:C.nuit2, slash:C.ciel, sColor:C.acier, copy:C.nuit2},
+    D:{letters:C.ivoire, z:C.ivoire, slash:C.sable, sColor:C.sable, copy:C.ivoire}},
+  {name:'4 · STUDIO empilé', note:'Version compacte : STUDIO petit et espacé, calé à droite sous la barre basse.',
+    o:{studio:'stack', sScale:0.34, sLs:14, stackGap:18},
+    L:{letters:C.nuit2, z:C.acier, slash:C.cuivre, sColor:C.acier, copy:C.nuit2},
+    D:{letters:C.ivoire, z:C.ivoire2, slash:C.cuivre, sColor:C.sable, copy:C.ivoire}},
+  {name:'5 · X pleine hauteur', note:'Les deux traits du X vont de la barre haute à la barre basse.',
+    o:{fullX:true, xw:1.3},
+    L:{letters:C.nuit2, z:C.nuit2, slash:C.acier, sColor:C.nuit2, copy:C.nuit2},
+    D:{letters:C.ivoire, z:C.ivoire, slash:C.sable, sColor:C.ivoire, copy:C.ivoire}},
+  {name:'6 · STUDIO en retrait', note:'STUDIO réduit et coloré, sur la ligne de base : FLUXART domine.',
+    o:{sScale:0.55, sLs:4, wordGap:34},
+    L:{letters:C.nuit, z:C.acier, slash:C.nuit, sColor:C.acier, copy:C.acier},
+    D:{letters:C.ivoire, z:C.cuivre, slash:C.ivoire, sColor:C.cuivre, copy:C.cuivre}},
+  {name:'7 · Monochrome', note:'Une seule teinte : tampons, gravure, très petites tailles.',
+    L:{letters:C.nuit, z:C.nuit, slash:C.nuit, sColor:C.nuit, copy:C.nuit},
+    D:{letters:C.ivoire, z:C.ivoire, slash:C.ivoire, sColor:C.ivoire, copy:C.ivoire}},
+];
+const VH = [96, 96, 96, 120, 104, 96, 80];
+const LADDER = [120, 80, 56, 40, 28, 18];
+
+function render(){
+  const capPx = +document.getElementById('cap').value;
+  document.getElementById('capOut').textContent = capPx + ' px';
+  const cards = (list, heights, id) => {
+    const vw = document.getElementById(id); vw.innerHTML = '';
+    list.forEach((v, i) => {
+      const card = document.createElement('section'); card.className = 'card';
+      card.innerHTML = `<header><b>${v.name}</b><span>${v.note}</span></header><div class="tiles"><div class="tile light"><span class="tag">fond clair</span></div><div class="tile dark"><span class="tag">fond sombre</span></div></div>`;
+      const [l, d] = card.querySelectorAll('.tile');
+      l.appendChild(build({...base, ...v.o, ...v.L}, heights[i], capPx));
+      d.appendChild(build({...base, ...v.o, ...v.D}, heights[i], capPx));
+      vw.appendChild(card);
+    });
+  };
+  cards(S, SH, 'synthese');
+  cards(V, VH, 'variants');
+  const ld = document.getElementById('ladder'); ld.innerHTML = '';
+  LADDER.forEach(h => {
+    const v = S[0];
+    const L = build({...base, ...v.o, ...v.L}, h, capPx), D = build({...base, ...v.o, ...v.D}, h, capPx);
+    const row = document.createElement('div'); row.className = 'rung';
+    row.innerHTML = `<div class="meta"><b>${h}&nbsp;px</b><span>©&nbsp;: ${L.dataset.cpx}&nbsp;px</span></div><div class="stack"><div class="tile light"></div><div class="tile dark"></div></div>`;
+    const t = row.querySelectorAll('.tile'); t[0].appendChild(L); t[1].appendChild(D);
+    ld.appendChild(row);
+  });
+}
+document.getElementById('cap').addEventListener('input', render);
+document.fonts.load('100px "Dela Gothic One"').then(() => document.fonts.ready).then(render);
+</script>
+</body>
+</html>
