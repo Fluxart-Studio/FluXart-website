@@ -212,6 +212,12 @@
 </style>
 </head>
 <body>
+<script>
+/* la page s'ouvre toujours en haut (pas de position retenue au rechargement) ; en ligne, le brouillon « 01 — Alpha Charlie Tango » est masqué */
+history.scrollRestoration = 'manual'; scrollTo(0, 0);
+if (/(^|\.)fluxart\.fr$/.test(location.hostname)) document.documentElement.classList.add('prelim');
+</script>
+<style>.prelim .vt > * { visibility:hidden; }</style>
 <div id="intro" role="progressbar" aria-label="Chargement" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
   <div class="ld"><div class="ld-row"><span>CHARGEMENT</span><span class="ld-p" id="ldP">0&nbsp;%</span></div><div class="ld-bar"><i id="ldBar"></i></div></div>
 </div>
@@ -1305,8 +1311,12 @@ const CROC = (() => {
   addEventListener('pointerdown', e => { if (hit(e)) { e.stopPropagation(); e.preventDefault(); S.st === 'wait' ? trigger() : trigger2(); } }, { capture: true });
   addEventListener('pointermove', e => hover(hit(e)));
   // molette : en haut de page, elle déclenche le départ au lieu de faire défiler ; pendant le départ, la page ne bouge pas
-  addEventListener('wheel', e => { if (S.st === 'wait' && scrollY < 2 && e.deltaY > 0) { e.preventDefault(); trigger(); }
-    else if (S.st === 'wait2' && e.deltaY > 0) { e.preventDefault(); trigger2(); } else if (S.lock) e.preventDefault(); }, { passive: false });
+  // ordinateur : tant que le crocodile n'est pas parti, la page ne défile pas toute seule (sinon il reste planté et on atteint la suite)
+  const before = () => FL.wide && ['idle', 'in', 'joy', 'wait'].includes(S.st);
+  addEventListener('wheel', e => { if (S.st === 'wait' && (scrollY < 2 || FL.wide) && e.deltaY > 0) { e.preventDefault(); trigger(); }
+    else if (S.st === 'wait2' && e.deltaY > 0) { e.preventDefault(); trigger2(); } else if (S.lock || before()) e.preventDefault(); }, { passive: false });
+  addEventListener('keydown', e => { if (before() && !e.target.closest('input, textarea, select, [contenteditable]')
+    && [' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) e.preventDefault(); });
   return { g, sign: SIGN.mesh, tick };
 })();
 
@@ -1384,6 +1394,7 @@ const baseDist = () => { const v = THREE.MathUtils.degToRad(camera.fov / 2), hf 
 
 const clock = new THREE.Clock(); let t0 = null;
 await Promise.all([window.__LD.ready, texReady]);
+scrollTo(0, 0);   // le crocodile part toujours du premier écran
 document.getElementById('intro').classList.add('out');
 const easeOut = x => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 4);
 
@@ -1630,23 +1641,6 @@ renderer.setAnimationLoop(() => {
     Object.assign(c, { state: 0, ang: -2, exited: false, said: false });
     c.card.classList.remove('s1', 's2'); c.el.classList.remove('dressed', 'look');
   }
-  function go4() {                                      // 2e temps : il repart vers la droite, sort habillé, la pancarte bascule
-    const c = C4; if (c.state !== 1) return;
-    c.timers.forEach(clearTimeout); c.timers = []; c.el.classList.remove('look'); c.state = 2;
-    const t0 = performance.now(), dur = 2400; let tt = 0;
-    const step = now => {
-      if (C4 !== c || c.state !== 2) return;
-      const p = Math.min(1, (now - t0) / dur), e = p < .5 ? 2*p*p : 1 - 2*(1-p)*(1-p);
-      const x = c.xm + (c.xe - c.xm) * (.15*e + .85*p);
-      if (!c.said && x + c.cwc*1.25 > c.cl + c.cwid) { c.said = true; c.card.classList.replace('s1', 's2'); }   // juste avant de sortir : 2e partie
-      if (x + c.cwc*.95 > c.cl + c.cwid) c.el.classList.add('dressed');   // pantalon enfilé tant que le bas du corps est encore caché
-      if (!c.exited && x + c.cwc*.45 > c.cl + c.cwid) { c.exited = true; tt = now; }   // sortie : la pancarte bascule
-      if (c.exited) { const q = Math.min(1, (now - tt) / 800); c.ang = -2 + 4 * (1 - (1-q)*(1-q)*(1-q)); }
-      place(x, p < 1);
-      if (p < 1 || c.ang < 2) c.raf = requestAnimationFrame(step); else { c.state = 3; LOCK = null; }   // fin : la molette est rendue
-    };
-    c.raf = requestAnimationFrame(step);
-  }
   function walk4(s, tx) {
     const c = C4;
     if (s < c.tp - 1) {                                 // 1er temps : il avance au rythme de la molette
@@ -1654,12 +1648,7 @@ renderer.setAnimationLoop(() => {
       const x = tx <= c.tA ? c.xs : c.xs + (c.xm - c.xs) * (tx - c.tA) / (c.tp - c.tA);
       place(x, tx > c.tA); return;
     }
-    if (c.state === 0) {                                // arrivé au milieu : arrêt, 1re partie du message,
-      c.state = 1; place(c.xm, false); c.card.classList.add('s1');   // il regarde à gauche, à droite, à gauche, à droite, puis repart
-      LOCK = scrollY + hz.getBoundingClientRect().top + c.tp; scrollTo({ top: LOCK, behavior: 'instant' });   // molette bloquée, calée pile sur l'arrêt
-      [[800, true], [1500, false], [2200, true], [2900, false]].forEach(([t, l]) => c.timers.push(setTimeout(() => c.el.classList.toggle('look', l), t)));
-      c.timers.push(setTimeout(go4, 3700));
-    }
+    if (c.state === 0) { c.state = 3; place(c.xm, false); }   // arrivé au milieu en défilant soi-même : la carte n'affiche jamais de citation
   }
 
   function onScroll() {
