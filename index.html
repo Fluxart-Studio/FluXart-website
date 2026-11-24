@@ -60,7 +60,7 @@
     padding:18px 20px; height:calc((2.7em + 40px) * var(--pb-scale));
     font:500 calc(clamp(18px,1.55vw,22px) * var(--pb-font))/1.35 'Inter',sans-serif; color:var(--ink);
     background:var(--paper); border:2px solid var(--line); border-radius:16px; }
-  .pb::placeholder { color:rgba(28,42,46,.5); }
+  .pb::placeholder { color:rgba(28,42,46,.5); font-size:200%; }   /* phrases machine à écrire : 2× la taille du champ */
   .pbwrap { position:relative; }
   .pbwrap.has-mic .pb { padding-right:68px; }
   .mic { position:absolute; right:12px; bottom:12px; width:44px; height:44px; padding:0; display:grid; place-items:center;
@@ -222,7 +222,7 @@
   <main class="panel">
     <h1 class="slogan" aria-label="Nous forgeons des outils uniques, pour vos besoins uniques."><span class="f" aria-hidden="true">Nous forgeons</span><span class="rime" aria-hidden="true"><span class="l">des outils</span><span class="u">uniques.</span><span class="l l2">pour vos besoins</span></span></h1>
     <form class="brief" id="brief" novalidate>
-      <label class="ask" for="pb">Un problème à résoudre pour votre entreprise&nbsp;?</label>
+      <label class="ask" for="pb">Un problème à résoudre&nbsp;? Une amélioration voulue pour votre entreprise&nbsp;? Dites-nous tout.</label>
       <div class="pbwrap">
         <textarea class="pb" id="pb" name="probleme" rows="2" required></textarea>
         <button class="mic" id="mic" type="button" hidden aria-label="Dicter ma demande au micro" title="Dicter ma demande au micro">
@@ -332,12 +332,14 @@
 <script>
 (() => {
   const PHRASES = [
-    'Mes devis me prennent 3 h par semaine',
-    'Je passe mes soirées sur la paperasse',
-    'Je veux une appli de fidélité',
-    'Mes inventaires prennent un week-end entier',
-    'Je gère mes stocks sur Excel',
-    'Mes plannings changent tous les jours',
+    'JE GÈRE MES DEVIS SUR EXCEL ET C\'EST LONG\u00a0!!!',
+    'J\'AI DES SOUCIS RÉCURRENTS D\'INVENTAIRE',
+    'JE VEUX FAIRE DES RELANCES AUTOMATIQUES AUPRÈS DES RETARDATAIRES',
+    'J\'AI BESOIN D\'UN SERVICE DE RÉSERVATION EN LIEN AVEC MA CUISINE',
+    'J\'AIMERAIS BIEN UNE APP DE CLICK AND COLLECT',
+    'JE NE M\'EN SORS PAS AVEC LES PLANNINGS\u00a0!',
+    'J\'AI BESOIN DE MIEUX GÉRER LES CLIENTS-FIDÉLITÉ',
+    'JE VEUX UN AGENT QUI SURVEILLE MES STOCKS ET COMMANDE CE QU\'IL FAUT AUPRÈS DE MES FOURNISSEURS',
   ];
   const pb = document.getElementById('pb');
   const wait = ms => new Promise(r => setTimeout(r, ms));
